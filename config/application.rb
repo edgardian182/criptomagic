@@ -11,6 +11,7 @@ require "action_view/railtie"
 require "action_cable/engine"
 require "sprockets/railtie"
 # require "rails/test_unit/railtie"
+require "i18n/backend/fallbacks"
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -32,5 +33,9 @@ module CriptoApp
 
     config.i18n.default_locale = :es
     config.time_zone = 'Bogota'
+
+    # Configure fallbacks for mongoid errors:
+    I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
+    config.i18n.fallbacks = { 'es' => 'en' }
   end
 end

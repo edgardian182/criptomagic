@@ -20,6 +20,11 @@ gem 'uglifier', '>= 1.3.0'
 gem 'mongoid'
 
 gem 'rails-i18n'
+gem 'faraday'
+gem 'awesome_print'
+
+# Oj --> Optimized JSON --> Used to parse JSON
+gem 'oj'
 
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 4.2'
@@ -38,6 +43,7 @@ gem 'jbuilder', '~> 2.5'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  gem 'pry'
 end
 
 group :development do
