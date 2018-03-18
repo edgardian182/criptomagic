@@ -1,0 +1,3 @@
+es:
+  validations:
+    exchange_uniqueness: "ya existe para %{exchange_name}"

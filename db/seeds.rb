@@ -1,4 +1,4 @@
-Binance.create unless Binance.count > 0
+Binance.create(name: 'Binance') unless Binance.count > 0
 
 # Create coins
 binance = Binance.last

@@ -19,15 +19,34 @@ class Coin
   field :last_updated, type: Integer # Pasat a int y luego Time.at()
 
   # - relationships -
-  has_many :candles
-  belongs_to :binance
+  has_many :candles, dependent: :destroy
+  belongs_to :exchange
 
   # - validations -
   validates_presence_of :symbol
-  validates_uniqueness_of :symbol
+  validate :exchange_uniqueness, on: :create
+
+  def update_coin
+    coin = exchange.market.coin_info(symbol)
+    coin.delete('id')
+    coin['volume_24h_usd'] = coin.delete('24h_volume_usd')
+
+    update(coin)
+  end
 
   def price
-    binance.price_for(symbol)
+    exchange.price_for(symbol)
+  end
+
+  def change
+    {
+      price_usd: price_usd,
+      price_btc: price_btc,
+      one_hour: "#{percent_change_1h}%",
+      one_day: "#{percent_change_24h}%",
+      seven_days: "#{percent_change_7d}%",
+      last_updated: last_updated
+    }
   end
 
   def self.search(symbol)
@@ -40,5 +59,12 @@ class Coin
 
   def last_updated
     Time.at(self[:last_updated])
+  end
+
+  private
+
+  def exchange_uniqueness
+    symbol.upcase! if symbol
+    errors.add(:symbol, I18n.t("validations.exchange_uniqueness", exchange_name: exchange.name)) if exchange && exchange.coins.where(symbol: symbol).exists?
   end
 end
