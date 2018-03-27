@@ -32,4 +32,19 @@ class BinanceClient
     Oj.load(res.body)
   end
 
+  def agg_trades_for(symbol, start_time = ((Time.now - 5.minutes).to_i * 1000), end_time = (Time.now.to_i * 1000))
+    # {
+    #   "a": 26129,         // Aggregate tradeId
+    #   "p": "0.01633102",  // Price
+    #   "q": "4.70443515",  // Quantity
+    #   "f": 27781,         // First tradeId
+    #   "l": 27781,         // Last tradeId
+    #   "T": 1498793709153, // Timestamp
+    #   "m": true,          // Was the buyer the maker?
+    #   "M": true           // Was the trade the best price match?
+    # }
+    res = get_request(path: '/api/v1/aggTrades', params: { symbol: symbol.to_s.upcase + 'BTC', startTime: start_time, endTime: end_time })
+    res
+  end
+
 end

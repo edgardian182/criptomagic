@@ -3,7 +3,7 @@ class Binance < Exchange
     @client ||= BinanceClient.new
   end
 
-  def qty_moved(symbol, limit = 500, btc: true)
+  def volume_moved_for(symbol, limit = 500, btc: true)
     # [{"id"=>9274551, "price"=>"0.01940800", "qty"=>"0.17000000", "time"=>1520863850247, "isBuyerMaker"=>false, "isBestMatch"=>true}]
 
     # Las compras aparecen en ROJO en TradeHistory y las ventas en VERDE contrario al libro de ordenes de la izquierda
@@ -42,18 +42,20 @@ class Binance < Exchange
 
   def peridical_movement(symbol, btc = true)
     movement = {}
-    movement[:r1] = qty_moved(symbol, 100, btc: btc)
-    movement[:r2] = qty_moved(symbol, 200, btc: btc)
-    movement[:r3] = qty_moved(symbol, 300, btc: btc)
-    movement[:r4] = qty_moved(symbol, 400, btc: btc)
-    movement[:r5] = qty_moved(symbol, 500, btc: btc)
+    movement[:r1] = volume_moved_for(symbol, 100, btc: btc)
+    movement[:r2] = volume_moved_for(symbol, 200, btc: btc)
+    movement[:r3] = volume_moved_for(symbol, 300, btc: btc)
+    movement[:r4] = volume_moved_for(symbol, 400, btc: btc)
+    movement[:r5] = volume_moved_for(symbol, 500, btc: btc)
     # movement.each { |k| movement[k].delete(:range) }
     # 9283851
     movement
   end
 
-  def data(symbol, start_time = ((Time.now - 5.minutes).to_i * 1000), end_time = (Time.now.to_i * 1000))
+  def period_movement_for(symbol, start_time = ((Time.now - 15.minutes).to_i * 1000), end_time = (Time.now.to_i * 1000))
     # maximo de tiempo es de una hora para la consulta en el rango
+    # el tiempo es en milisegundos por eso se multiplica por 1000
+    symbol.upcase!
 
     qty_buy = 0
     qty_sell = 0
@@ -61,7 +63,10 @@ class Binance < Exchange
     max_price = 0
     min_price = 1
 
-    r = client.get_request(path: '/api/v1/aggTrades', params: { symbol: symbol.to_s.upcase + 'BTC', startTime: start_time, endTime: end_time })
+    # Devuelve todos los trades hechos en el periodo de tiempo dado [{}]
+    r = client.agg_trades_for(symbol, start_time, end_time)
+    return logger.info "#{r['msg']} in agg_trades_for #{symbol}" if r.class == Hash && r['msg']
+    return logger.info "client error" if r.empty?
 
     init_price = r.first['p']
     last_price = r.last['p']
@@ -71,13 +76,23 @@ class Binance < Exchange
       price = trade['p'].to_f
       max_price = price if price > max_price
       min_price = price if price < min_price
-      trade['m'] ? qty_buy += (trade['q'].to_f * price) : qty_sell += (trade['q'].to_f * price)
+      qty_moved = trade['q'].to_f * price
+      trade['m'] ? qty_buy += qty_moved : qty_sell += qty_moved
     end
 
     # Me interesa el volumen de venta, si es positivo precio subira
     volume = qty_sell - qty_buy
 
-    return { bought: "#{qty_buy} BTC", sold: "#{qty_sell} BTC", range: "#{(end_time - start_time) / 1000 / 60} min", volume: volume, init_price: init_price, last_price: last_price, max_price: format('%.8f', max_price), min_price: format('%.8f', min_price), price_movement: "#{price_movement}%", time: Time.at(start_time / 1000) }
+    return { bought: "#{qty_buy} BTC", sold: "#{qty_sell} BTC", range: (end_time - start_time) / 1000 / 60, volume: volume, init_price: init_price, last_price: last_price, max_price: format('%.8f', max_price), min_price: format('%.8f', min_price), price_movement: "#{price_movement}%", time: Time.at(start_time / 1000), symbol: symbol }
+  end
+
+  def last_candle_for(symbol, mins = 15, time = Time.now)
+    time = time_formatting(mins, time)
+
+    t0 = (time - mins.minutes).to_i * 1000
+    t1 = time.to_i * 1000
+
+    period_movement_for(symbol, t0, t1)
   end
 
   def volume_and_price(symbol)
@@ -87,10 +102,10 @@ class Binance < Exchange
     time30 = (Time.now - 30.minutes).to_i * 1000
     time60 = (Time.now - 60.minutes).to_i * 1000
 
-    d1 = data(symbol, time5, end_time)
-    d2 = data(symbol, time15, end_time)
-    d3 = data(symbol, time30, end_time)
-    d4 = data(symbol, time60, end_time)
+    d1 = period_movement_for(symbol, time5, end_time)
+    d2 = period_movement_for(symbol, time15, end_time)
+    d3 = period_movement_for(symbol, time30, end_time)
+    d4 = period_movement_for(symbol, time60, end_time)
 
     [d1, d2, d3, d4]
   end
@@ -110,19 +125,7 @@ class Binance < Exchange
     inspection
   end
 
-  def time_formatting(mins, time)
-    minutes = time.min
-    return time if minutes == 0
-    unless mins == 60
-      minutes -= 1 while minutes % mins != 0
-      time = time.change(min: minutes)
-      return time
-    end
-    time = time.change(min: 0)
-    time
-  end
-
-  def last_period_from(symbol, periods, mins = 60, time = Time.now, fake_time: false)
+  def last_movement_for(symbol, periods = 2, mins = 60, time = Time.now, fake_time: false)
     result = {}
     info = []
     accumulated_volume = 0
@@ -133,7 +136,7 @@ class Binance < Exchange
       t0 = (time - ((count + 1) * mins).minutes).to_i * 1000
       t1 = (time - (count * mins).minutes).to_i * 1000
 
-      r = data(symbol, t0, t1)
+      r = period_movement_for(symbol, t0, t1)
       accumulated_volume += r[:volume]
 
       info << r
@@ -145,7 +148,6 @@ class Binance < Exchange
 
       start_time = Time.at(t0 / 1000) if count == periods
       end_time = Time.at(t1 / 1000) if count == 1
-
     end
 
     price_change = (((end_price.to_f * 100) / initial_price.to_f) - 100).round(2)
