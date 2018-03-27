@@ -1,6 +1,7 @@
 class Exchange
   include Mongoid::Document
   include Mongoid::Timestamps
+  include TimeHandler
 
   # - fields
   field :name, type: String
