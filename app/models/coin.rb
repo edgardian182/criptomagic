@@ -17,7 +17,7 @@ class Coin
   field :percent_change_1h, type: Float
   field :percent_change_24h, type: Float
   field :percent_change_7d, type: Float
-  field :last_updated, type: Integer # Pasat a int y luego Time.at()
+  field :last_updated, type: Integer # Pasar a int y luego Time.at()
 
   # - relationships -
   has_many :candles, dependent: :destroy
@@ -63,28 +63,75 @@ class Coin
     Coin.where(symbol: symbol.upcase).first
   end
 
-  def create_candle(mins = 15, time = Time.now)
-    return logger.info 'Have pass more than a week after that candle' if time < (Time.now - 1.week)
+  # Mas rapido que generate_candle
+  def self.new_candle(exchange_id, range = '15m')
+    return NewCandleJob.perform_later(exchange_id.to_s, range)
+  end
+
+  def self.generate_candle(exchange_id, range = '15m')
+    Coin.where(exchange: exchange_id).each do |coin|
+      GenerateCandleJob.perform_later(coin.id.to_s, range)
+    end
+  end
+
+  # Puede usarse para create_candles para mas temporalidades (1h, 4h, 1d, 1w, 1M)
+  def create_candlestick(range = '15m', time = Time.now)
+    mins = %w[1m 3m 5m 15m 30m].include?(range) ? range.to_i : 60 # Used for time_formatting
+    time = time_formatting(mins, time)
+    mins = INTERVALS[range]
+
+    t0 = time - mins.minutes
+    return logger.info 'Candle already exists' if candles.where(range: range, open_time: t0).exists?
+
+    candles_info = exchange.last_candlestick_for(symbol, range, time).last
+    return if candles_info.is_a? String
+    candles_info[:coin_id] = id
+    candles_info[:exchange_id] = exchange.id
+
+    Candle.create(candles_info)
+  end
+
+  def show_candlestricks(periods, range, time = Time.now)
+    mins = %w[1m 3m 5m 15m 30m].include?(range) ? range.to_i : 60 # Used for time_formatting
+    time = time_formatting(mins, time)
+
+    check_candlestick_presence!(periods, range, time)
+
+    candles.where(range: range, :open_time.lte => time).desc(:open_time).limit(periods).to_a
+  end
+
+  def create_candle(range = '15m', time = Time.now)
+    mins = %w[1m 3m 5m 15m 30m].include?(range) ? range.to_i : 60 # Used for time_formatting
+    time = time_formatting(mins, time)
+    # No se usa INTERVALS antes por los casos de mas de 1 hora
+    mins = INTERVALS[range]
+
+    t0 = time - mins.minutes
+    return logger.info 'Candle already exists' if candles.where(range: range, open_time: t0).exists?
     candle = exchange.last_candle_for(symbol, mins, time)
     candle['coin_id'] = id
-    return logger.info 'Candle already exists' if candles.where(range: candle[:range], time: candle[:time]).exists?
+    candle['closed'] = true
+    candle['exchange_id'] = exchange.id
+
     Candle.create(candle)
   end
 
   def show_candles(periods, range, time = Time.now)
-    time = time_formatting(range, time)
+    mins = %w[1m 3m 5m 15m 30m].include?(range) ? range.to_i : 60 # Used for time_formatting
+    time = time_formatting(mins, time)
 
     check_candle_presence!(periods, range, time)
 
-    candles.where(range: range, :time.lte => time).desc(:time).limit(periods).to_a
+    candles.where(range: range, :open_time.lte => time).desc(:open_time).limit(periods).to_a
   end
 
   def show_candles_in_time(periods, range, time = Time.now)
-    show_candles(periods, range, time).map{|c| c.attributes.merge(time: c[:time].in_time_zone('Bogota'))}
+    show_candles(periods, range, time).map{ |c| c.attributes.merge(open_time: c[:open_time].in_time_zone('Bogota')) }
   end
 
   def accumulated_volume(periods, range, time = Time.now)
     r = show_candles(periods, range, time)
+    mins = INTERVALS[range]
 
     accumulated_volume = 0
 
@@ -96,8 +143,8 @@ class Coin
     initial_price = r.last.last_price
     end_price = r.first.last_price
 
-    end_time = r.first.time + range.minutes
-    start_time = r.last.time
+    end_time = r.first.open_time + mins.minutes
+    start_time = r.last.open_time
 
     price_change = (((end_price.to_f * 100) / initial_price.to_f) - 100).round(2)
     range_time = "#{start_time} / #{end_time}"
@@ -106,14 +153,15 @@ class Coin
   end
 
   def analyze(periods, range, time = Time.now)
-    time = time_formatting(range, time)
+    mins = %w[1m 3m 5m 15m 30m].include?(range) ? range.to_i : 60 # Used for time_formatting
+    time = time_formatting(mins, time)
 
     check_candle_presence!(periods, range, time)
 
     entries = {}
 
     # velas que existan en X periodos con rango X a partir del tiempo time en orden descendente
-    candls = candles.where(range: range, :time.lte => time).desc(:time).limit(periods).reverse
+    candls = candles.where(range: range, :open_time.lte => time).desc(:open_time).limit(periods).reverse
 
     b0 = candls.first.bought.to_f
     s0 = candls.first.sold.to_f
@@ -121,7 +169,7 @@ class Coin
     v0 = candls.first.volume.to_f
 
     candls.each do |candle|
-      k = candle.time
+      k = candle.open_time
       v = []
       v << 'sold' if sold_condition(s0, v0, candle)
       v << 'volume' if volume_condition(v0, candle)
@@ -130,10 +178,10 @@ class Coin
       v << 'price_up' if price_up(pm0, v0, candle)
       v << 'volume_hight' if volume_hight_condition(v0, candle)
 
-      v << 'sold_confirmation' if entries[k - range.minutes] && entries[k - range.minutes].include?('sold') && sold_confirmation(s0, v0, candle)
+      v << 'sold_confirmation' if entries[k - mins.minutes] && entries[k - mins.minutes].include?('sold') && sold_confirmation(s0, v0, candle)
 
       # DEBO CAMBIAR PARA QUE EL TIME SEA EL DE LA VELA ACTUAL Y PROYECTE EL VOLUMEN ACUMILADO HACIA ATRAS
-      v << 'accumulated_price_divergence' if accumulated_price_divergence(4, range, candle.time)
+      v << 'accumulated_price_divergence' if accumulated_price_divergence(4, range, candle.open_time)
 
       v << 'exit_sold' if exit_sold(s0, v0, pm0, candle)
       v << 'exit_bought' if exit_bought(b0, v0, candle)
@@ -165,12 +213,27 @@ class Coin
   end
 
   def check_candle_presence!(periods, range, time)
+    mins = %w[1m 3m 5m 15m 30m].include?(range) ? range.to_i : 60 # Used for time_formatting
+
     count = 0
     while count < periods
-      t0 = time - ((count + 1) * range).minutes
-      t1 = time - (count * range).minutes
+      t0 = time - ((count + 1) * mins).minutes
+      t1 = time - (count * mins).minutes
 
-      create_candle(range, t1) unless candles.where(range: range, time: t0).exists?
+      create_candle(range, t1) unless candles.where(range: range, open_time: t0).exists?
+      count += 1
+    end
+  end
+
+  def check_candlestick_presence!(periods, range, time)
+    mins = %w[1m 3m 5m 15m 30m].include?(range) ? range.to_i : 60 # Used for time_formatting
+
+    count = 0
+    while count < periods
+      t0 = time - ((count + 1) * mins).minutes
+      t1 = time - (count * mins).minutes
+
+      create_candlestick(range, t1) unless candles.where(range: range, open_time: t0).exists?
       count += 1
     end
   end
@@ -248,7 +311,7 @@ class Coin
     candle.volume < -15
   end
 
-  def accumulated_price_divergence(periods = 4, range = 15, time = Time.now)
+  def accumulated_price_divergence(periods = 4, range = '15m', time = Time.now)
     r = accumulated_volume(periods, range, time)
     r[:accumulated_volume] < 0 && r[:price_change].to_f > 0
   end
