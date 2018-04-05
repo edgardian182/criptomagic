@@ -5,9 +5,11 @@ class Exchange
 
   # - fields
   field :name, type: String
+  field :last_errors, type: Array, default: []
 
   # - relationships
   has_many :coins, dependent: :destroy
+  has_many :candles, dependent: :destroy
 
   # - validations
   validates_presence_of :name
@@ -31,6 +33,7 @@ class Exchange
     return logger.info "Coin #{symbol} was not found in MarketCap database, should add it manually" if coin.empty?
     coin.delete('id')
     coin['volume_24h_usd'] = coin.delete('24h_volume_usd')
+    coin['symbol'] = 'IOTA' if coin['symbol'] == 'MIOTA'
 
     coins.create(coin)
   end
@@ -54,5 +57,9 @@ class Exchange
 
   def search_coin(symbol)
     coins.where(symbol: symbol.upcase).first
+  end
+
+  def clean_errors
+    set(last_errors: [])
   end
 end
