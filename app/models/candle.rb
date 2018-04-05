@@ -4,21 +4,25 @@ class Candle
   # - fields
   field :bought, type: String
   field :sold, type: String
-  field :range, type: Integer
+  field :range, type: String
   field :volume, type: Float
   field :init_price, type: String
   field :last_price, type: String
   field :max_price, type: String
   field :min_price, type: String
   field :price_movement, type: String
-  field :time, type: Time
+  field :open_time, type: Time
+  field :close_time, type: Time
+  field :trades, type: Integer
+  field :closed, type: Boolean
   field :symbol, type: String
 
   # - relationships
   belongs_to :coin
+  belongs_to :exchange
 
   # - validations
-  validates_presence_of :bought, :sold, :range, :volume, :init_price, :last_price, :max_price, :min_price, :price_movement, :time
+  validates_presence_of :bought, :sold, :range, :volume, :init_price, :last_price, :max_price, :min_price, :price_movement, :open_time
   validate :time_range_uniqueness
 
   def hammer?
@@ -41,6 +45,6 @@ class Candle
   private
 
   def time_range_uniqueness
-    errors.add(:time, "already exist for #{range} range") if Candle.where(range: range, time: time, coin_id: coin.id).exists?
+    errors.add(:time, "already exist for #{range} range") if Candle.where(range: range, open_time: open_time, coin_id: coin.id).exists?
   end
 end

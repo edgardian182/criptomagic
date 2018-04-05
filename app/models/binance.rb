@@ -3,6 +3,107 @@ class Binance < Exchange
     @client ||= BinanceClient.new
   end
 
+  def candlestick_for(symbol, periods = 1, range = '15m', time = Time.now)
+    return false unless INTERVALS.include?(range)
+
+    symbol.upcase!
+
+    mins = %w[1m 3m 5m 15m 30m].include?(range) ? range.to_i : 60 # Used for time_formatting
+    time = time_formatting(mins, time)
+
+    t0 = (time - (INTERVALS[range].minutes * periods)).to_i * 1000
+    t1 = time.to_i * 1000
+
+    r = client.candlestick_data(symbol, range, periods, t0, t1)
+    return 'error' if r == 'error'
+
+    candles = []
+    r.each do |candle|
+      c = {}
+      c[:bought] = candle[7].to_f - candle[10].to_f
+      c[:sold] = candle[10].to_f
+      c[:range] = range
+      c[:volume] = candle[10].to_f - (candle[7].to_f - candle[10].to_f)
+      c[:init_price] = candle[1]
+      c[:last_price] = candle[4]
+      c[:max_price] = candle[2]
+      c[:min_price] = candle[3]
+      c[:price_movement] = "#{(((candle[4].to_f * 100) / candle[1].to_f) - 100).round(2)}%"
+      c[:open_time] = Time.at(candle[0] / 1000)
+      c[:close_time] = Time.at(candle[6] / 1000)
+      c[:trades] = candle[8]
+      c[:symbol] = symbol
+      c[:closed] = time >= Time.at(candle[6] / 1000)
+      candles << c
+    end
+
+    candles.reverse
+
+  rescue BinanceError => e
+    handle_error(e)
+  end
+
+  def last_candlestick_for(symbol, range = '15m', time = Time.now)
+    candlestick_for(symbol, 1, range, time)
+  end
+
+  def period_movement_for(symbol, start_time = ((Time.now - 15.minutes).to_i * 1000), end_time = (Time.now.to_i * 1000))
+    # maximo de tiempo es de una hora para la consulta en el rango
+    # el tiempo es en milisegundos por eso se multiplica por 1000
+    symbol.upcase!
+
+    qty_buy = 0
+    qty_sell = 0
+
+    max_price = 0
+    min_price = 1
+
+    # Devuelve todos los trades hechos en el periodo de tiempo dado [{}]
+    r = client.agg_trades_for(symbol, start_time, end_time)
+    return logger.info "#{r['msg']} in agg_trades_for #{symbol}" if r.class == Hash && r['msg']
+    return logger.info "client error" if r.empty?
+
+    init_price = r.first['p']
+    last_price = r.last['p']
+    price_movement = (((last_price.to_f * 100) / init_price.to_f) - 100).round(2)
+
+    r.each do |trade|
+      price = trade['p'].to_f
+      max_price = price if price > max_price
+      min_price = price if price < min_price
+      qty_moved = trade['q'].to_f * price
+      trade['m'] ? qty_buy += qty_moved : qty_sell += qty_moved
+    end
+
+    # Me interesa el volumen de venta, si es positivo precio subira
+    volume = qty_sell - qty_buy
+
+    return {
+      bought: "#{qty_buy} BTC",
+      sold: "#{qty_sell} BTC",
+      range: INTERVALS.key((end_time - start_time) / 1000 / 60),
+      volume: volume,
+      init_price: init_price,
+      last_price: last_price,
+      max_price: format('%.8f', max_price),
+      min_price: format('%.8f', min_price),
+      price_movement: "#{price_movement}%",
+      open_time: Time.at(start_time / 1000),
+      close_time: Time.at(end_time / 1000),
+      trades: r.length,
+      symbol: symbol
+    }
+  end
+
+  def last_candle_for(symbol, mins = 15, time = Time.now)
+    time = time_formatting(mins, time)
+
+    t0 = (time - mins.minutes).to_i * 1000
+    t1 = time.to_i * 1000
+
+    period_movement_for(symbol, t0, t1)
+  end
+
   def volume_moved_for(symbol, limit = 500, btc: true)
     # [{"id"=>9274551, "price"=>"0.01940800", "qty"=>"0.17000000", "time"=>1520863850247, "isBuyerMaker"=>false, "isBestMatch"=>true}]
 
@@ -52,49 +153,6 @@ class Binance < Exchange
     movement
   end
 
-  def period_movement_for(symbol, start_time = ((Time.now - 15.minutes).to_i * 1000), end_time = (Time.now.to_i * 1000))
-    # maximo de tiempo es de una hora para la consulta en el rango
-    # el tiempo es en milisegundos por eso se multiplica por 1000
-    symbol.upcase!
-
-    qty_buy = 0
-    qty_sell = 0
-
-    max_price = 0
-    min_price = 1
-
-    # Devuelve todos los trades hechos en el periodo de tiempo dado [{}]
-    r = client.agg_trades_for(symbol, start_time, end_time)
-    return logger.info "#{r['msg']} in agg_trades_for #{symbol}" if r.class == Hash && r['msg']
-    return logger.info "client error" if r.empty?
-
-    init_price = r.first['p']
-    last_price = r.last['p']
-    price_movement = (((last_price.to_f * 100) / init_price.to_f) - 100).round(2)
-
-    r.each do |trade|
-      price = trade['p'].to_f
-      max_price = price if price > max_price
-      min_price = price if price < min_price
-      qty_moved = trade['q'].to_f * price
-      trade['m'] ? qty_buy += qty_moved : qty_sell += qty_moved
-    end
-
-    # Me interesa el volumen de venta, si es positivo precio subira
-    volume = qty_sell - qty_buy
-
-    return { bought: "#{qty_buy} BTC", sold: "#{qty_sell} BTC", range: (end_time - start_time) / 1000 / 60, volume: volume, init_price: init_price, last_price: last_price, max_price: format('%.8f', max_price), min_price: format('%.8f', min_price), price_movement: "#{price_movement}%", time: Time.at(start_time / 1000), symbol: symbol }
-  end
-
-  def last_candle_for(symbol, mins = 15, time = Time.now)
-    time = time_formatting(mins, time)
-
-    t0 = (time - mins.minutes).to_i * 1000
-    t1 = time.to_i * 1000
-
-    period_movement_for(symbol, t0, t1)
-  end
-
   def volume_and_price(symbol)
     end_time = Time.now.to_i * 1000
     time5 = (Time.now - 5.minutes).to_i * 1000
@@ -108,21 +166,6 @@ class Binance < Exchange
     d4 = period_movement_for(symbol, time60, end_time)
 
     [d1, d2, d3, d4]
-  end
-
-  def inspect_coins
-    inspection = {}
-    sym = symbols[0,10]
-    sym.each do |symbol|
-      next if symbol.blank?
-      count = 0
-      volume_and_price(symbol).each do |data|
-        count += 1 if data[:volume].to_f > 0
-      end
-      inspection[symbol] = count
-    end
-
-    inspection
   end
 
   def last_movement_for(symbol, periods = 2, mins = 60, time = Time.now, fake_time: false)
@@ -180,5 +223,12 @@ class Binance < Exchange
       symbols << s
     end
     symbols
+  end
+
+  def handle_error(error)
+    logger.error "with exchange: #{name}(#{id}) #{error.error_code} #{error.message} [#{error.symbol}]"
+    last_errors << { error.error_code.to_s => { message: error.message, symbol: error.symbol, time: Time.now } }
+    save
+    return 'error'
   end
 end

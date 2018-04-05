@@ -10,7 +10,7 @@ class BinanceClient
     res = @connection.get "#{path}", params, 'Content-Type': 'application/json'
     if res.status != 200
       error = Oj.load(res.body)
-      # raise MasterbaseError.new(error['Error']['Message']['Value'], error)
+      raise BinanceError.new(error['msg'], error, params[:symbol])
     end
 
     Oj.load(res.body)
@@ -25,7 +25,7 @@ class BinanceClient
 
     if res.status != 200
       error = Oj.load(res.body)
-      # raise MasterbaseError.new(error['Error']['Message']['Value'], error)
+      raise BinanceError.new(error['msg'], error)
     end
     p res.body
 
@@ -47,4 +47,30 @@ class BinanceClient
     res
   end
 
+  def candlestick_data(symbol, interval, limit, start_time, end_time)
+    # [
+    #   [
+    #     1499040000000,      // Open time                    [0]
+    #     "0.01634790",       // Open                         [1]
+    #     "0.80000000",       // High                         [2]
+    #     "0.01575800",       // Low                          [3]
+    #     "0.01577100",       // Close                        [4]
+    #     "148976.11427815",  // Volume                       [5]     -->  Total de volumen en symbol (Compra y venta)
+    #     1499644799999,      // Close time                   [6]
+    #     "2434.19055334",    // Quote asset volume           [7]     -->   Total volumen en BTC => SOLD + BOUGHT (compra y venta)
+    #     308,                // Number of trades             [8]
+    #     "1756.87402397",    // Taker buy base asset volume  [9]     -->   SOLD en symbol  --> Total vendido
+    #     "28.46694368",      // Taker buy quote asset volume [10]    -->   SOLD en BTC
+    #     "17928899.62484339" // Ignore                       [11]
+    #   ]
+    # ]
+    res = get_request(path: '/api/v1/klines', params: {
+                                                        symbol: symbol.to_s.upcase + 'BTC',
+                                                        interval: interval,
+                                                        limit: limit,
+                                                        startTime: start_time,
+                                                        endTime: end_time
+                                                      })
+    res
+  end
 end
