@@ -37,5 +37,7 @@ module CriptoApp
     # Configure fallbacks for mongoid errors:
     I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
     config.i18n.fallbacks = { 'es' => 'en' }
+
+    config.active_job.queue_adapter = Rails.env == 'production' ? :sidekiq : :async
   end
 end

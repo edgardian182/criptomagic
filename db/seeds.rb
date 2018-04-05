@@ -11,3 +11,5 @@ end
 iota = Coin.search 'miota'
 iota.symbol = 'IOTA'
 iota.save
+
+Coin.new_candle(binance.id)
