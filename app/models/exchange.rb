@@ -14,6 +14,17 @@ class Exchange
   # - validations
   validates_presence_of :name
 
+  FLAGS = {
+    "f1" => %w[price_possible_divergence hammer_hight accumulated_price_divergence],
+    "f2" => %w[hammer_hight accumulated_price_divergence],
+    "f3" => %w[price_possible_divergence hammer_hight],
+    "f4" => %w[price_possible_divergence accumulated_price_divergence],
+    "f5" => %w[hammer_hight],
+    "f6" => %w[accumulated_price_divergence],
+    "f7" => %w[price_possible_divergence],
+    "f8" => %w[volume_hight hammer_hight]
+  }.freeze
+
   def client
     false
   end
@@ -61,5 +72,26 @@ class Exchange
 
   def clean_errors
     set(last_errors: [])
+  end
+
+  def show_flags
+    FLAGS
+  end
+
+  def analyze_coins(range, flag = '', all: true)
+    # Inicialmente todas las flags se deben cumplir
+    # flag = %w[price_possible_divergence hammer_hight accumulated_price_divergence] if flag.empty?
+    flag = FLAGS[flag]
+    flag = FLAGS['f1'] if flag.blank?
+
+    to_review = []
+    coins.each do |coin|
+      a = coin.analyze(2, range)
+      alerts = a.values.first.values.flatten.uniq
+      to_review << coin.symbol if flag.all? { |f| alerts.include? f } && all
+      to_review << coin.symbol if flag.any? { |f| alerts.include? f } && !all
+      # to_review << coin.symbol if (a.values.first.values.flatten.uniq & flag).any?
+    end
+    { Time.now => to_review }
   end
 end
