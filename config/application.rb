@@ -38,6 +38,7 @@ module CriptoApp
     I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
     config.i18n.fallbacks = { 'es' => 'en' }
 
-    config.active_job.queue_adapter = Rails.env == 'production' ? :sidekiq : :async
+    # config.active_job.queue_adapter = Rails.env == 'production' ? :sidekiq : :async
+    config.active_job.queue_adapter = :sidekiq
   end
 end

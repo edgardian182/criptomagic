@@ -1,0 +1,4 @@
+:schedule:
+  jobs:
+    every: '1m'
+    class: CronWorker
