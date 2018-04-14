@@ -7,9 +7,11 @@ binance.symbols.each do |symbol|
   binance.create_coin(symbol)
 end
 
+binance.create_coin('BTC')
+
 # Fix iota
 iota = Coin.search 'miota'
 iota.symbol = 'IOTA'
 iota.save
 
-Coin.new_candle(binance.id)
+Coin.new_candle(binance.id, '15m')

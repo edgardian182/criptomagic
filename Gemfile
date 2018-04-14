@@ -28,6 +28,8 @@ gem 'oj'
 
 # - jobs
 gem 'sidekiq'
+# gem 'whenever', require: false
+gem 'sidekiq-scheduler'
 
 # Used to create asyncronous ejecutions
 gem 'promise'

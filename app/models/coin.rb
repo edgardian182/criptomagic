@@ -126,7 +126,7 @@ class Coin
   end
 
   def show_candles_in_time(periods, range, time = Time.now)
-    show_candles(periods, range, time).map{ |c| c.attributes.merge(open_time: c[:open_time].in_time_zone('Bogota')) }
+    show_candles(periods, range, time).map{ |c| c.attributes.merge(open_time: c[:open_time].in_time_zone('Bogota'), close_time: c[:close_time].in_time_zone('Bogota')) }
   end
 
   def accumulated_volume(periods, range, time = Time.now)

@@ -7,6 +7,7 @@ class Binance < Exchange
     return false unless INTERVALS.include?(range)
 
     symbol.upcase!
+    symbol = symbol != 'BTC' ? symbol + 'BTC' : symbol + 'USDT'
 
     mins = %w[1m 3m 5m 15m 30m].include?(range) ? range.to_i : 60 # Used for time_formatting
     time = time_formatting(mins, time)
@@ -51,6 +52,7 @@ class Binance < Exchange
     # maximo de tiempo es de una hora para la consulta en el rango
     # el tiempo es en milisegundos por eso se multiplica por 1000
     symbol.upcase!
+    symbol = symbol != 'BTC' ? symbol + 'BTC' : symbol + 'USDT'
 
     qty_buy = 0
     qty_sell = 0

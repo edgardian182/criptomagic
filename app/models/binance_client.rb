@@ -43,7 +43,7 @@ class BinanceClient
     #   "m": true,          // Was the buyer the maker?
     #   "M": true           // Was the trade the best price match?
     # }
-    res = get_request(path: '/api/v1/aggTrades', params: { symbol: symbol.to_s.upcase + 'BTC', startTime: start_time, endTime: end_time })
+    res = get_request(path: '/api/v1/aggTrades', params: { symbol: symbol.to_s.upcase, startTime: start_time, endTime: end_time })
     res
   end
 
@@ -65,7 +65,7 @@ class BinanceClient
     #   ]
     # ]
     res = get_request(path: '/api/v1/klines', params: {
-                                                        symbol: symbol.to_s.upcase + 'BTC',
+                                                        symbol: symbol.to_s.upcase,
                                                         interval: interval,
                                                         limit: limit,
                                                         startTime: start_time,
