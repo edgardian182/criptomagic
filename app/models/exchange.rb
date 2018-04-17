@@ -92,6 +92,9 @@ class Exchange
       to_review << coin.symbol if flag.any? { |f| alerts.include? f } && !all
       # to_review << coin.symbol if (a.values.first.values.flatten.uniq & flag).any?
     end
-    { Time.now => to_review }
+    {
+      Time.now => to_review,
+      flag: flag
+    }
   end
 end

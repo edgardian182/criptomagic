@@ -65,7 +65,7 @@ class Coin
 
   # Mas rapido que generate_candle
   def self.new_candle(exchange_id, range = '15m')
-    return NewCandleJob.perform_later(exchange_id.to_s, range)
+    NewCandleJob.perform_later(exchange_id.to_s, range)
   end
 
   def self.generate_candle(exchange_id, range = '15m')
@@ -156,7 +156,7 @@ class Coin
     mins = %w[1m 3m 5m 15m 30m].include?(range) ? range.to_i : 60 # Used for time_formatting
     time = time_formatting(mins, time)
 
-    check_candle_presence!(periods, range, time)
+    check_candlestick_presence!(periods, range, time)
 
     entries = {}
 
@@ -171,6 +171,17 @@ class Coin
     candls.each do |candle|
       k = candle.open_time
       v = []
+
+      if Flag.where(candle: candle).exists?
+        b0 = candle.bought.to_f
+        s0 = candle.sold.to_f
+        pm0 = candle.price_movement.to_f
+        v0 = candle.volume.to_f
+
+        entries[k] = Flag.where(candle: candle).first.items
+        next
+      end
+
       v << 'sold' if sold_condition(s0, v0, candle)
       v << 'volume' if volume_condition(v0, candle)
       v << 'price' if price_condition(pm0, v0, b0, candle)
@@ -198,6 +209,8 @@ class Coin
       s0 = candle.sold.to_f
       pm0 = candle.price_movement.to_f
       v0 = candle.volume.to_f
+
+      Flag.create(symbol: symbol, items: v, created_at: k, candle: candle, coin: self)
 
       entries[k] = v unless v.empty?
     end
