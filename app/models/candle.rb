@@ -25,6 +25,8 @@ class Candle
   validates_presence_of :bought, :sold, :range, :volume, :init_price, :last_price, :max_price, :min_price, :price_movement, :open_time
   validate :time_range_uniqueness
 
+  after_create :analyze_coin
+
   def hammer?
     if price_movement.to_f > 0
       body = last_price.to_f - init_price.to_f
@@ -40,6 +42,10 @@ class Candle
 
     return 'hammer_low' if (upper_shadow / body > 2) && ((upper_shadow / body) / (lower_shadow / body) >= 2)
     return 'hammer_hight' if (lower_shadow / body > 2) && ((lower_shadow / body) / (upper_shadow / body) >= 2)
+  end
+
+  def analyze_coin
+    AnalyzeCoinJob.perform_later(coin.id.to_s, 2, range)
   end
 
   private

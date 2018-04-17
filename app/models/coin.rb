@@ -74,6 +74,10 @@ class Coin
     end
   end
 
+  def analyze_coin(periods, range)
+    AnalyzeCoinJob.perform_later(id.to_s, periods, range)
+  end
+
   # Puede usarse para create_candles para mas temporalidades (1h, 4h, 1d, 1w, 1M)
   def create_candlestick(range = '15m', time = Time.now)
     mins = %w[1m 3m 5m 15m 30m].include?(range) ? range.to_i : 60 # Used for time_formatting
