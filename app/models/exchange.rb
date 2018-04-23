@@ -78,11 +78,21 @@ class Exchange
     FLAGS
   end
 
-  def analyze_coins(range, flag = '', all: true)
+  def analyze_coins(range, flag = '', time = Time.now, all: true)
+    mins = %w[1m 3m 5m 15m 30m].include?(range) ? range.to_i : 60 # Used for time_formatting
+    time = time_formatting(mins, time)
+
     # Inicialmente todas las flags se deben cumplir
     # flag = %w[price_possible_divergence hammer_hight accumulated_price_divergence] if flag.empty?
     flag = FLAGS[flag]
     flag = FLAGS['f1'] if flag.blank?
+
+    if AnalyzeResult.where(range: range, flag: flag, open_time: time, all_filters: all).exists?
+      return {
+        Time.now => AnalyzeResult.where(range: range, flag: flag, open_time: time, all_filters: all).first.to_review,
+        flag: flag
+      }
+    end
 
     to_review = []
     coins.each do |coin|
@@ -92,6 +102,9 @@ class Exchange
       to_review << coin.symbol if flag.any? { |f| alerts.include? f } && !all
       # to_review << coin.symbol if (a.values.first.values.flatten.uniq & flag).any?
     end
+
+    AnalyzeResult.create(range: range, flag: flag, open_time: time, to_review: to_review, all_filters: all)
+
     {
       Time.now => to_review,
       flag: flag
