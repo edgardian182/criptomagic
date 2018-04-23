@@ -207,6 +207,8 @@ class Coin
       # DEBO CAMBIAR PARA QUE EL TIME SEA EL DE LA VELA ACTUAL Y PROYECTE EL VOLUMEN ACUMILADO HACIA ATRAS
       v << 'accumulated_price_divergence' if accumulated_price_divergence(4, range, candle.open_time)
 
+      v << 'continuous_possible_price_up' if continuous_possible_price_up(3, range, candle.open_time)
+
       v << 'exit_sold' if exit_sold(s0, v0, pm0, candle)
       v << 'exit_bought' if exit_bought(b0, v0, candle)
       v << 'exit_volume_low' if exit_volume_low(candle)
@@ -350,4 +352,14 @@ class Coin
   #   r = accumulated_volume(periods, range, time)
   #   r[:accumulated_volume] < 0 && r[:price_change].to_f > 0
   # end
+
+  def continuous_possible_price_up(periods = 3, range = '15m', time = Time.now)
+    # Mira que en las ultimas 3 velas el precio haya subido en un rango de 0% a 1%
+    # Esto incrementa la posibilidad de que el precio se prepare para una subida grande
+
+    # Revisar que TDI sea positivo para más seguridad --> Linea roja ascendente
+
+    r = show_candles(periods, range, time)
+    r.all? { |candle| candle.price_movement.to_f.between?(0, 1) }
+  end
 end
