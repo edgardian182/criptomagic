@@ -2,6 +2,7 @@ class Coin
   include Mongoid::Document
   include Mongoid::Timestamps
   include TimeHandler
+  extend TimeHandler
 
   # - fields -
   field :name, type: String
@@ -64,8 +65,16 @@ class Coin
   end
 
   # Mas rapido que generate_candle
-  def self.new_candle(exchange_id, range = '15m')
-    NewCandleJob.perform_later(exchange_id.to_s, range)
+  def self.new_candle(exchange_id, range = '15m', time = Time.now)
+    mins = %w[1m 3m 5m 15m 30m].include?(range) ? range.to_i : 60 # Used for time_formatting
+    time = time_formatting(mins, time)
+    t0 = time - mins.minutes
+
+    exchange = Exchange.find(exchange_id)
+    total_coins = exchange.coins.count
+    last_candles = Candle.where(range: range, open_time: t0, exchange: exchange).count
+
+    NewCandleJob.perform_later(exchange_id.to_s, range) if total_coins != last_candles
   end
 
   def self.generate_candle(exchange_id, range = '15m')
@@ -160,7 +169,7 @@ class Coin
     mins = %w[1m 3m 5m 15m 30m].include?(range) ? range.to_i : 60 # Used for time_formatting
     time = time_formatting(mins, time)
 
-    check_candlestick_presence!(periods, range, time)
+    check_candle_presence!(periods, range, time)
 
     entries = {}
 

@@ -1,7 +1,7 @@
 class NewCandleJob < ApplicationJob
   require 'future'
 
-  queue_as :default
+  queue_as :critical
 
   def perform(exchange_id, range)
     exchange = Exchange.find(exchange_id)

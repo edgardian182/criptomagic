@@ -1,3 +1,12 @@
+:concurrency: 10
+# staging:
+#   :concurrency: 10
+# production:
+#   :concurrency: 10
+:queues:
+  - critical
+  - default
+  - low
 :schedule:
   jobs:
     every: '1m'
