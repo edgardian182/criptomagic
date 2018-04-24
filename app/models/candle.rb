@@ -27,6 +27,11 @@ class Candle
 
   after_create :analyze_coin
 
+  # - indexes
+  index({ exchange_id: 1, range: 1, open_time: -1 }, background: true)
+  index({ coin_id: 1, range: 1, open_time: -1 }, background: true)
+  index({ range: 1, open_time: -1 }, background: true)
+
   def hammer?
     if price_movement.to_f > 0
       body = last_price.to_f - init_price.to_f

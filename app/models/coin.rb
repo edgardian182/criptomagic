@@ -28,6 +28,10 @@ class Coin
   validates_presence_of :symbol
   validate :exchange_uniqueness, on: :create
 
+  # - indexes
+  index(exchange_id: 1)
+  index(symbol: 1)
+
   def last_updated
     Time.at(self[:last_updated])
   end
@@ -360,6 +364,6 @@ class Coin
     # Revisar que TDI sea positivo para más seguridad --> Linea roja ascendente
 
     r = show_candles(periods, range, time)
-    r.all? { |candle| candle.price_movement.to_f.between?(0, 1) }
+    r.all? { |candle| candle.price_movement.to_f.between?(0.001, 1) }
   end
 end

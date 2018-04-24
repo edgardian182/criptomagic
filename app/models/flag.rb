@@ -12,4 +12,7 @@ class Flag
 
   #  - validations
   validates_presence_of :symbol
+
+  # - indexes
+  index({ candle_id: 1 }, background: true)
 end

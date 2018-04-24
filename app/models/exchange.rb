@@ -22,7 +22,10 @@ class Exchange
     "f5" => %w[hammer_hight],
     "f6" => %w[accumulated_price_divergence],
     "f7" => %w[price_possible_divergence],
-    "f8" => %w[volume_hight hammer_hight]
+    "f8" => %w[volume_hight hammer_hight],
+    "f9" => %w[volume_hight accumulated_price_divergence],
+    "f10" => %w[continuous_possible_price_up],
+    "f11" => %w[price_possible_divergence hammer_hight accumulated_price_divergence continuous_possible_price_up]
   }.freeze
 
   def client
