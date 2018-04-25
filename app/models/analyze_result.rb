@@ -11,7 +11,7 @@ class AnalyzeResult
   validates_presence_of :range, :open_time, :all_filters
 
   # - indexes
-  index({ range: 1, open_time: -1 }, background: true)
-  index({ range: 1, open_time: -1, flag: 1 }, background: true)
+  # index({ range: 1, open_time: -1 }, background: true)
+  # index({ range: 1, open_time: -1, flag: 1 }, background: true)
   index({ range: 1, open_time: -1, flag: 1, all_filters: 1 }, background: true)
 end

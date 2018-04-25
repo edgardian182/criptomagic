@@ -213,6 +213,9 @@ class Coin
 
       v << 'continuous_possible_price_up' if continuous_possible_price_up(3, range, candle.open_time)
 
+      v << 'pump' if pump(candle)
+      v << 'dump' if dump(candle)
+
       v << 'exit_sold' if exit_sold(s0, v0, pm0, candle)
       v << 'exit_bought' if exit_bought(b0, v0, candle)
       v << 'exit_volume_low' if exit_volume_low(candle)
@@ -365,5 +368,14 @@ class Coin
 
     r = show_candles(periods, range, time)
     r.all? { |candle| candle.price_movement.to_f.between?(0.001, 1) }
+  end
+
+  def pump(candle)
+    # Aprovechar retroceso después de estas velas
+    candle.price_movement.to_f >= 10
+  end
+
+  def dump(candle)
+    candle.price_movement.to_f <= -10
   end
 end
