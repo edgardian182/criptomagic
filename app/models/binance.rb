@@ -203,7 +203,10 @@ class Binance < Exchange
   end
 
   def price_for(symbol)
-    client.get_request(path: '/api/v3/ticker/price', params: { symbol: symbol.to_s.upcase + 'BTC' }) if symbol
+    symbol.upcase!
+    symbol = symbol != 'BTC' ? symbol + 'BTC' : symbol + 'USDT'
+
+    client.get_request(path: '/api/v3/ticker/price', params: { symbol: symbol }) if symbol
   end
 
   def coin_prices

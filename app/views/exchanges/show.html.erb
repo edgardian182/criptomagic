@@ -1,0 +1,18 @@
+<h1><%= @exchange.name %></h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Moneda</th>
+      <th>Precio</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      
+    </tr>
+  </tbody>
+</table>
+<% @exchange.coins.sort_by(&:symbol).each do |coin| %>
+  <p><%= coin.symbol %></p>
+<% end %>

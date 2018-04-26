@@ -1,2 +1,6 @@
-<h1>Welcome#index</h1>
-<p>Find me in app/views/welcome/index.html.erb</p>
+<h1>Cripto Magic</h1>
+<p>Bienvenido a CriptoMagic, escoge tu exchange:</p>
+
+<% @exchanges.each do |exchange| %>
+  <%= link_to exchange.name, exchange_path(exchange) %>
+<% end %>
