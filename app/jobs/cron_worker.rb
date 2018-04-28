@@ -4,11 +4,12 @@ class CronWorker
   include Sidekiq::Worker
 
   def perform
-    b = Binance.last
+    Exchange.each do |exchange|
+      Coin.new_candle(exchange.id, '15m')
+      # NewCandleJob.perform_later(b.id.to_s, '15m')
+      Coin.new_candle(exchange.id, '1h')
 
-    Coin.new_candle(b.id, '15m')
-    # NewCandleJob.perform_later(b.id.to_s, '15m')
-    # Coin.new_candle(b.id, '1h') if [0, 1, 2, 3, 4, 5, 6].include? Time.now.min
-    Coin.new_candle(b.id, '1h')
+      UpdateCoinsJob.perform_later(exchange.id.to_s) if Time.now.min % 5 == 0
+    end
   end
 end

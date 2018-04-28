@@ -21,6 +21,8 @@ class Candle
   belongs_to :coin
   belongs_to :exchange
 
+  has_many :flags, dependent: :destroy
+
   # - validations
   validates_presence_of :bought, :sold, :range, :volume, :init_price, :last_price, :max_price, :min_price, :price_movement, :open_time
   validate :time_range_uniqueness
