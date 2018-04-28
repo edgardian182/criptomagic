@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe ExchangesController, type: :controller do
+RSpec.describe CoinsController, type: :controller do
 
   describe "GET #show" do
     it "returns http success" do

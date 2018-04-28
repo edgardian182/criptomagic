@@ -1,6 +1,13 @@
-<h1>Cripto Magic</h1>
-<p>Bienvenido a CriptoMagic, escoge tu exchange:</p>
+<div class='jumbotron jumbotron-fluid'>
+  <div class='container'>
+    <h1>Cripto Magic</h1>
+    <p>Apunta y dispara tus trades donde está el movimiento del mercado</p>
+  </div>
+</div>
 
-<% @exchanges.each do |exchange| %>
-  <%= link_to exchange.name, exchange_path(exchange) %>
-<% end %>
+<div class='container'>
+  <p>Escoge tu exchange:</p>
+  <% @exchanges.each do |exchange| %>
+    <%= link_to "#{exchange.name}", exchange_path(exchange) %>
+  <% end %>
+</div>

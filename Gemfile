@@ -26,6 +26,9 @@ gem 'awesome_print'
 # Oj --> Optimized JSON --> Used to parse JSON
 gem 'oj'
 
+gem 'bootstrap', '~> 4.1.0'
+gem 'jquery-rails'
+
 # - jobs
 gem 'sidekiq'
 # gem 'whenever', require: false

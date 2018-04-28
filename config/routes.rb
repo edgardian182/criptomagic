@@ -22,5 +22,6 @@ Rails.application.routes.draw do
   # end
 
   resources :exchanges, only: [:show]
+  resources :coins, only: [:show]
 
 end
