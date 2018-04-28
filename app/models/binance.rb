@@ -227,7 +227,8 @@ class Binance < Exchange
       s = symbol['symbol'].slice(0...i)
       symbols << s
     end
-    symbols
+    symbols << 'BTC'
+    symbols.reject(&:empty?)
   end
 
   def handle_error(error)

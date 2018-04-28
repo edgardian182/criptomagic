@@ -45,10 +45,13 @@ class Coin
   end
 
   def update_coin
-    coin = exchange.market.coin_info(symbol)
+    sym = symbol
+    sym = 'BCH' if symbol == 'BCC' && (exchange.name == 'Binance' || exchange.name == 'Bittrex')
+    coin = exchange.market.coin_info(sym)
     coin.delete('id')
     coin['volume_24h_usd'] = coin.delete('24h_volume_usd')
     coin['symbol'] = 'IOTA' if coin['symbol'] == 'MIOTA'
+    coin['symbol'] = 'BCC' if coin['symbol'] == 'BCH' && (exchange.name == 'Binance' || exchange.name == 'Bittrex')
 
     update(coin)
   end

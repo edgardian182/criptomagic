@@ -45,29 +45,64 @@ class Exchange
   def create_coin(symbol)
     symbol = symbol.upcase
     return logger.info 'Coin already exists' if coins.where(symbol: symbol).exists?
+    symbol = 'BCH' if symbol == 'BCC' && (name == 'Binance' || name == 'Bittrex')
     coin = market.coin_info(symbol)
     return logger.info "Coin #{symbol} was not found in MarketCap database, should add it manually" if coin.empty?
     coin.delete('id')
     coin['volume_24h_usd'] = coin.delete('24h_volume_usd')
     coin['symbol'] = 'IOTA' if coin['symbol'] == 'MIOTA'
+    coin['symbol'] = 'BCC' if coin['symbol'] == 'BCH' && (name == 'Binance' || name == 'Bittrex')
 
     coins.create(coin)
+  end
+
+  def create_coins
+    exchange_symbols = symbols
+    exchange_symbols.uniq!
+    count = exchange_symbols.count
+    coins_info = market.coins_info
+    coins_info.each do |coin|
+      next unless exchange_symbols.include? coin['symbol']
+      count -= 1
+      next unless coins.where(symbol: coin['symbol']).exists?
+      next if coin['symbol'] == 'BCC' # BitConnect
+      coin.delete('id')
+      coin['volume_24h_usd'] = coin.delete('24h_volume_usd')
+      coin['symbol'] = 'IOTA' if coin['symbol'] == 'MIOTA'
+      coin['symbol'] = 'BCC' if coin['symbol'] == 'BCH' && (name == 'Binance' || name == 'Bittrex')
+
+      coins.create(coin)
+      break if count == 0
+    end
   end
 
   def update_coin(symbol)
     symbol = symbol.upcase
     outdated_coin = coins.where(symbol: symbol)
+    symbol = 'BCH' if symbol == 'BCC' && (name == 'Binance' || name == 'Bittrex')
     return unless outdated_coin
     coin = market.coin_info(symbol)
     coin.delete('id')
     coin['volume_24h_usd'] = coin.delete('24h_volume_usd')
+    coin['symbol'] = 'IOTA' if coin['symbol'] == 'MIOTA'
+    coin['symbol'] = 'BCC' if coin['symbol'] == 'BCH' && (name == 'Binance' || name == 'Bittrex')
 
     outdated_coin.update(coin)
   end
 
   def update_coins
-    coins.each do |coin|
-      update_coin(coin.symbol)
+    coins_info = market.coins_info
+    coins_info.each do |coin|
+      next unless coins.where(symbol: coin['symbol']).exists?
+      next if coin['symbol'] == 'BCC' # BitConnect
+      coin.delete('id')
+      coin['volume_24h_usd'] = coin.delete('24h_volume_usd')
+      coin['symbol'] = 'IOTA' if coin['symbol'] == 'MIOTA'
+      coin['symbol'] = 'BCC' if coin['symbol'] == 'BCH' && (name == 'Binance' || name == 'Bittrex')
+
+      outdated_coin = coins.where(symbol: coin['symbol']).first
+      outdated_coin.update(coin) if outdated_coin.updated_at < (Time.now - 1.minutes)
+      outdated_coin.set(updated_at: Time.now)
     end
   end
 
