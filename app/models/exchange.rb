@@ -64,7 +64,7 @@ class Exchange
     coins_info.each do |coin|
       next unless exchange_symbols.include? coin['symbol']
       count -= 1
-      next unless coins.where(symbol: coin['symbol']).exists?
+      next if coins.where(symbol: coin['symbol']).exists?
       next if coin['symbol'] == 'BCC' # BitConnect
       coin.delete('id')
       coin['volume_24h_usd'] = coin.delete('24h_volume_usd')

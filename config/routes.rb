@@ -21,7 +21,10 @@ Rails.application.routes.draw do
   #   resources :coins
   # end
 
+  # get '/user', action: 'show', controller: 'users'
+
   resources :exchanges, only: [:show]
   resources :coins, only: [:show]
+  post '/coins/analyze', to: 'coins#analyze', as: 'analyze_coin'
 
 end

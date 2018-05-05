@@ -12,5 +12,5 @@
     every: '1m'
     class: CronWorker
   clear:
-    every: '1d'
+    every: '6h'
     class: ClearCandles
