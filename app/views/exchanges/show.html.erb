@@ -1,6 +1,7 @@
-<h1><%= @exchange.name %></h1>
-
-<table class='table table-hover text-center'>
+<div class="">
+  <%= render 'layouts/search' %>
+</div>
+<table class='table table-hover text-center table-fixed'>
   <thead class='thead-dark'>
     <tr>
       <th>Moneda</th>
@@ -10,13 +11,14 @@
   </thead>
   <tbody>
     <% @exchange.coins.sort_by(&:symbol).each do |coin| %>
-    <tr >
-      <td><%= link_to "#{coin.symbol}", coin_path(coin) %></td>
-      <td><%= format('%.8f',coin.price_btc) %></td>
-      <td class=<%= coin.percent_change_24h > 0 ? 'text-success' : 'text-danger' if coin.percent_change_24h %>>
-        <%= number_to_percentage(coin.percent_change_24h, precision: 2) %>
-      </td>
-    </tr>
+      <% next if @search && @search != coin %>
+      <tr >
+        <td><%= link_to "#{coin.symbol}", coin_path(coin) %></td>
+        <td><%= format('%.8f',coin.price_btc) %></td>
+        <td class=<%= coin.percent_change_24h > 0 ? 'text-success' : 'text-danger' if coin.percent_change_24h %>>
+          <%= number_to_percentage(coin.percent_change_24h, precision: 2) %>
+        </td>
+      </tr>
     <% end %>
   </tbody>
 </table>

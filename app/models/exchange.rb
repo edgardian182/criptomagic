@@ -13,6 +13,7 @@ class Exchange
 
   # - validations
   validates_presence_of :name
+  validates_uniqueness_of :name
 
   FLAGS = {
     "f1" => %w[price_possible_divergence hammer_hight accumulated_price_divergence],
