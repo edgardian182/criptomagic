@@ -1,0 +1,26 @@
+<nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
+  <%= link_to 'CriptoMagic', root_path, class: 'navbar-brand' %>
+  <% if @exchange %>
+    <%= link_to "#{@exchange.name.upcase}", exchange_path(@exchange), class: 'navbar-brand', style: 'color: yellow' %>
+  <% end %>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link disabled <%= 'active' if @tab == :portfolio %>" href="#">Portafolio</a>
+      </li>
+      <li class="nav-item <%= 'active' if @tab == :filters %>">
+        <a class="nav-link disabled" href="#">Filtros</a>
+      </li>
+      <li class="nav-item <%= 'active' if @tab == :classes %>">
+        <a class="nav-link disabled" href="#">Clases</a>
+      </li>
+      <li class="nav-item <%= 'active' if @tab == :signals %>">
+        <a class="nav-link disabled" href="#">Señales</a>
+      </li>
+    </ul>
+  </div>
+</nav>

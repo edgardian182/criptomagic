@@ -1,6 +1,7 @@
 class CoinsController < ApplicationController
   def show
     @coin = Coin.find(params[:id])
+    @exchange = @coin.exchange
   end
 
   def analyze
