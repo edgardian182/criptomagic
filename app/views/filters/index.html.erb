@@ -1,0 +1,107 @@
+<h1>Filtros</h1>
+
+<%= form_tag(analyze_filter_path, method: :post) do %>
+  <div class="form-row">
+    <div class='form-group col-6'>
+      <div class="input-group mb-1">
+        <div class="input-group-prepend">
+          <%= label_tag :exchange, 'Exchange', class: 'input-group-text' %>
+        </div>
+        <%= select_tag :exchange, options_for_select(Exchange.all.map{|e| [e.name, e.name]}), class: 'form-control col' %>
+      </div>
+    </div>
+    <div class='form-group col-6'>
+      <div class="input-group mb-1">
+        <div class="input-group-prepend">
+          <%= label_tag :filter, 'Filtro', class: 'input-group-text' %>
+        </div>
+        <%= select_tag :filter, options_for_select(Exchange::FLAGS.keys.map{|k| [k, k]}, params[:analysis] ? params[:analysis][:filter] : 'f1'), class: 'form-control col' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class='form-group col-6'>
+      <div class="input-group mb-1">
+        <div class="input-group-prepend">
+          <%= label_tag :periods, 'Periodos', class: 'input-group-text' %>
+        </div>
+        <%= number_field_tag :periods, :quantity, in: 1..24, step: 1, value: params[:analysis] ? params[:analysis][:periods].to_i : 1, class: 'form-control col' %>
+      </div>
+    </div>
+    <div class='form-group col-6'>
+      <div class="input-group mb-1">
+        <div class="input-group-prepend">
+          <%= label_tag :range, 'Rango', class: 'input-group-text' %>
+        </div>
+        <%= select_tag :range, options_for_select([['15m', '15m'],['30m', '30m'],['1h', '1h']], params[:analysis] ? params[:analysis][:range] : '15m'), class: 'form-control col' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class='form-group col-6'>
+      <div class="input-group mb-1">
+        <div class="input-group-prepend">
+          <%= label_tag :day, 'Día', class: 'input-group-text' %>
+        </div>
+        <%= select_day Time.now, {}, { class: 'custom-select' } %>
+      </div>
+      <div class="input-group mb-1">
+        <div class="input-group-prepend">
+          <%= label_tag :month, 'Mes', class: 'input-group-text' %>
+        </div>
+        <%= select_tag 'date[month]', options_for_select(((Date.today - 1.month).month..Date.today.month).map{|m| [Date::MONTHNAMES[m], m]}, Date.today.month), class: 'form-control col' %>
+      </div>
+      <div class="input-group mb-1">
+        <div class="input-group-prepend">
+          <%= label_tag :year, 'Año', class: 'input-group-text' %>
+        </div>
+        <%= select_year Time.now, { start_year: Date.today.month == 1 ? Date.today.year - 1 : Date.today.year, end_year: Date.today.year}, { class: 'form-control col' } %>
+      </div>
+      <!-- <%= select_month Time.now %> -->
+    </div>
+
+    <div class='form-group col-6'>
+      <div class="input-group mb-1">
+        <div class="input-group-prepend">
+          <%= label_tag :hour, 'Hora', class: 'input-group-text' %>
+        </div>
+        <%= select_hour Time.now, {}, { class: 'form-control col' } %>
+      </div>
+      <div class="input-group mb-1">
+        <div class="input-group-prepend">
+          <%= label_tag :minute, 'Minuto', class: 'input-group-text' %>
+        </div>
+        <%= select_minute Time.now, {}, { class: 'form-control col' } %>
+      </div>
+      <!-- <%= datetime_select :date, :time %> -->
+    </div>
+  </div>
+
+  <%= submit_tag "Filtrar", class: 'btn btn-success form-control btn-lg' %>
+<% end %>
+
+<!-- `ANALYSIS TABLE ` -->
+<% if params['analysis'] %>
+  <% analysis = Exchange.find(params[:analysis][:exchange]).analyze_coins(params[:analysis][:range], params[:analysis][:filter], Time.at(params[:analysis][:time].to_i)) %>
+  <table class='table table-hover text-center'>
+    <thead class='thead-dark'>
+      <tr>
+        <th>Tiempo</th>
+        <th>Monedas</th>
+        <th>Flags</th>
+      </tr>
+    </thead>
+    <tbody>
+      <td><%= analysis.keys.first %></td>
+      <td>
+        <% analysis[analysis.keys.first].each do |symbol| %>
+          <% coin = Coin.where(symbol: symbol, exchange: params[:analysis][:exchange]).first %>
+          <%= link_to symbol, coin_path(coin, id: coin.id) %>
+        <% end %>
+      </td>
+      <td><%= analysis[analysis.keys.last] %></td>
+    </tbody>
+  </table>
+<% end %>

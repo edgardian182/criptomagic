@@ -26,5 +26,7 @@ Rails.application.routes.draw do
   resources :exchanges, only: [:show]
   resources :coins, only: [:show]
   post '/coins/analyze', to: 'coins#analyze', as: 'analyze_coin'
+  resources :filters, only: [:index]
+  post '/filters/analyze', to: 'filters#analyze', as: 'analyze_filter'
 
 end
