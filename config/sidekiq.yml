@@ -11,6 +11,6 @@
   jobs:
     every: '1m'
     class: CronWorker
-  clear:
+  daily_jobs:
     every: '6h'
-    class: ClearCandles
+    class: DailyJobs
