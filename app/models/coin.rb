@@ -19,6 +19,7 @@ class Coin
   field :percent_change_24h, type: Float
   field :percent_change_7d, type: Float
   field :last_updated, type: Integer # Pasar a int y luego Time.at()
+  field :volume_24h_btc, type: Float
 
   # - relationships -
   has_many :candles, dependent: :destroy

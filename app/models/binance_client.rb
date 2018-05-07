@@ -73,4 +73,9 @@ class BinanceClient
                                                       })
     res
   end
+
+  def daily_coin_data(symbol = nil)
+    return get_request(path: '/api/v1/ticker/24hr', params: { symbol: symbol }) if symbol
+    get_request(path: '/api/v1/ticker/24hr', params: {}) # All coins
+  end
 end

@@ -218,6 +218,25 @@ class Binance < Exchange
     prices
   end
 
+  def daily_coin_data(symbol = nil)
+    if symbol
+      symbol.upcase!
+      symbol = symbol != 'BTC' ? symbol + 'BTC' : symbol + 'USDT'
+    end
+
+    r = client.daily_coin_data(symbol)
+    btc_coins = []
+    if r.is_a? Array
+      r.each do |coin|
+        next unless coin['symbol'].rindex('BTC') || coin['symbol'] == 'BTCUSDT'
+        btc_coins << coin
+      end
+    else
+      btc_coins << r
+    end
+    btc_coins
+  end
+
   def symbols
     symbols = []
     r = client.get_request(path: '/api/v1/exchangeInfo', params: {})

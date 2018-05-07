@@ -6,6 +6,7 @@
     <tr>
       <th>Moneda</th>
       <th>Precio (BTC)</th>
+      <th>Volumen 24H (BTC)</th>
       <th>Cambio 24H</th>
     </tr>
   </thead>
@@ -14,7 +15,8 @@
       <% next if @search && @search != coin %>
       <tr >
         <td><%= link_to "#{coin.symbol}", coin_path(coin) %></td>
-        <td><%= format('%.8f',coin.price_btc) %></td>
+        <td><%= format('%.8f', coin.price_btc) %></td>
+        <td><%= format('%.2f', coin.volume_24h_btc) if coin.symbol != 'BTC' %></td>
         <td class=<%= coin.percent_change_24h > 0 ? 'text-success' : 'text-danger' if coin.percent_change_24h %>>
           <%= number_to_percentage(coin.percent_change_24h, precision: 2) %>
         </td>

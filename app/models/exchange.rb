@@ -107,6 +107,17 @@ class Exchange
     end
   end
 
+  def update_coins_24h_volume
+    d = daily_coin_data
+
+    d.each do |coin|
+      i = coin['symbol'].rindex('BTC')
+      symbol = coin['symbol'].slice(0...i)
+      c = coins.where(symbol: symbol).first
+      c.set(volume_24h_btc: coin['quoteVolume']) if c
+    end
+  end
+
   def search_coin(symbol)
     coins.where(symbol: symbol.upcase).first
   end
