@@ -19,6 +19,6 @@ class CoinsController < ApplicationController
 
     AnalyzeCoinJob.perform_later(coin.id.to_s, periods, range, time.to_i)
 
-    redirect_to coin_path(coin, analysis: { periods: periods, range: range, time: time.to_i })
+    redirect_to coin_path(coin, analysis: { periods: periods, range: range, time: time.to_i, year: year, month: month, day: day, hour: hour, minute: minute })
   end
 end

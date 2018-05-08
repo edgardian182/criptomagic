@@ -48,19 +48,19 @@
           <div class="input-group-prepend">
             <%= label_tag :day, 'Día', class: 'input-group-text' %>
           </div>
-          <%= select_day Time.now, {}, { class: 'custom-select' } %>
+          <%= select_day params[:analysis] ? params[:analysis][:day].to_i : Time.now, {}, { class: 'custom-select' } %>
         </div>
         <div class="input-group mb-1">
           <div class="input-group-prepend">
             <%= label_tag :month, 'Mes', class: 'input-group-text' %>
           </div>
-          <%= select_tag 'date[month]', options_for_select(((Date.today - 1.month).month..Date.today.month).map{|m| [Date::MONTHNAMES[m], m]}, Date.today.month), class: 'form-control col' %>
+          <%= select_tag 'date[month]', options_for_select(((Date.today - 1.month).month..Date.today.month).map{|m| [Date::MONTHNAMES[m], m]}, params[:analysis] ? params[:analysis][:month].to_i : Date.today.month), class: 'form-control col' %>
         </div>
         <div class="input-group mb-1">
           <div class="input-group-prepend">
             <%= label_tag :year, 'Año', class: 'input-group-text' %>
           </div>
-          <%= select_year Time.now, { start_year: Date.today.month == 1 ? Date.today.year - 1 : Date.today.year, end_year: Date.today.year}, { class: 'form-control col' } %>
+          <%= select_year params[:analysis] ? params[:analysis][:day].to_i : Time.now, { start_year: Date.today.month == 1 ? Date.today.year - 1 : Date.today.year, end_year: Date.today.year}, { class: 'form-control col' } %>
         </div>
         <!-- <%= select_month Time.now %> -->
       </div>
@@ -70,20 +70,23 @@
           <div class="input-group-prepend">
             <%= label_tag :hour, 'Hora', class: 'input-group-text' %>
           </div>
-          <%= select_hour Time.now, {}, { class: 'form-control col' } %>
+          <%= select_hour params[:analysis] ? params[:analysis][:hour].to_i : Time.now, {}, { class: 'form-control col' } %>
         </div>
         <div class="input-group mb-1">
           <div class="input-group-prepend">
             <%= label_tag :minute, 'Minuto', class: 'input-group-text' %>
           </div>
-          <%= select_minute Time.now, {}, { class: 'form-control col' } %>
+          <%= select_minute params[:analysis] ? params[:analysis][:minute].to_i : Time.now, {}, { class: 'form-control col' } %>
         </div>
         <!-- <%= datetime_select :date, :time %> -->
       </div>
     </div>
 
     <%= hidden_field_tag :coin_id, @coin.id.to_s %>
-    <%= submit_tag "Analizar", class: 'btn btn-success form-control btn-lg' %>
+    <div class="input-group" role="group">
+      <%= link_to 'Reset', filters_path, class: 'btn btn-danger btn-secondary form-control btn-lg' %>
+      <%= submit_tag "Analizar", class: 'btn btn-success form-control btn-lg' %>
+    </div>
   <% end %>
 
   <!-- `ANALYSIS TABLE ` -->
