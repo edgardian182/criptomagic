@@ -141,7 +141,7 @@ class Coin
     mins = %w[1m 3m 5m 15m 30m].include?(range) ? range.to_i : 60 # Used for time_formatting
     time = time_formatting(mins, time)
 
-    check_candle_presence!(periods, range, time)
+    check_candlestick_presence!(periods, range, time)
 
     candles.where(range: range, :open_time.lte => time).desc(:open_time).limit(periods).to_a
   end
@@ -177,7 +177,7 @@ class Coin
     mins = %w[1m 3m 5m 15m 30m].include?(range) ? range.to_i : 60 # Used for time_formatting
     time = time_formatting(mins, time)
 
-    check_candle_presence!(periods, range, time)
+    check_candlestick_presence!(periods, range, time)
 
     entries = {}
 

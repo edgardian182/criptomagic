@@ -140,8 +140,9 @@ class Exchange
     flag = FLAGS['f1'] if flag.blank?
 
     if AnalyzeResult.where(range: range, flag: flag, open_time: time, all_filters: all).exists?
+      result = AnalyzeResult.where(range: range, flag: flag, open_time: time, all_filters: all).first
       return {
-        Time.now => AnalyzeResult.where(range: range, flag: flag, open_time: time, all_filters: all).first.to_review,
+        result.open_time => result.to_review,
         flag: flag
       }
     end
@@ -155,10 +156,10 @@ class Exchange
       # to_review << coin.symbol if (a.values.first.values.flatten.uniq & flag).any?
     end
 
-    AnalyzeResult.create(range: range, flag: flag, open_time: time, to_review: to_review, all_filters: all)
+    result = AnalyzeResult.create(range: range, flag: flag, open_time: time, to_review: to_review, all_filters: all)
 
     {
-      Time.now => to_review,
+      result.open_time => to_review,
       flag: flag
     }
   end

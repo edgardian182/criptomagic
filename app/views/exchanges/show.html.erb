@@ -15,10 +15,10 @@
       <% next if @search && @search != coin %>
       <tr >
         <td><%= link_to "#{coin.symbol}", coin_path(coin) %></td>
-        <td><%= format('%.8f', coin.price_btc) %></td>
-        <td><%= format('%.2f', coin.volume_24h_btc) if coin.symbol != 'BTC' %></td>
+        <td><%= format('%.8f', coin.price_btc) if coin.price_btc%></td>
+        <td><%= format('%.2f', coin.volume_24h_btc) if coin.symbol != 'BTC' && coin.volume_24h_btc %></td>
         <td class=<%= coin.percent_change_24h > 0 ? 'text-success' : 'text-danger' if coin.percent_change_24h %>>
-          <%= number_to_percentage(coin.percent_change_24h, precision: 2) %>
+          <%= number_to_percentage(coin.percent_change_24h, precision: 2) if coin.percent_change_24h %>
         </td>
       </tr>
     <% end %>

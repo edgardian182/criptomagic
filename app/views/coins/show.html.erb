@@ -2,6 +2,7 @@
 
 <% symbol = @coin.symbol == 'BTC' ? 'BTCUSDT' : @coin.symbol + 'BTC' %>
 <h3 class="my-3"><%= @coin.name %>(<%= @coin.symbol %>)
+  <span class="badge badge-pill badge-<%= @btc_alert.blank? ? 'success' : 'danger' %>"> BTC</span>
   <span>
     <%= link_to 'Gráfico', " http://es.tradingview.com/chart/?symbol=#{@exchange.name.upcase}:#{symbol}&interval=#{params[:analysis] ? INTERVALS[params[:analysis][:range]] : '60'}", target: '_blank', class: 'badge badge-pill badge-primary' %>
   </span>

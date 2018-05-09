@@ -2,6 +2,7 @@ class CoinsController < ApplicationController
   def show
     @coin = Coin.find(params[:id])
     @exchange = @coin.exchange
+    @btc_alert = btc_alert
   end
 
   def analyze
