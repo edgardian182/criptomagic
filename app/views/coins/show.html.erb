@@ -85,7 +85,7 @@
 
     <%= hidden_field_tag :coin_id, @coin.id.to_s %>
     <div class="input-group" role="group">
-      <%= link_to 'Reset', filters_path, class: 'btn btn-danger btn-secondary form-control btn-lg' %>
+      <%= link_to 'Reset', coin_path(@coin), class: 'btn btn-danger btn-secondary form-control btn-lg' %>
       <%= submit_tag "Analizar", class: 'btn btn-success form-control btn-lg' %>
     </div>
   <% end %>
