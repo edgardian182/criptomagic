@@ -1,6 +1,6 @@
 class CoinsController < ApplicationController
   def show
-    @coin = Coin.find(params[:id])
+    @coin = params[:search] ? Coin.search(params[:search]) : Coin.find(params[:id])
     @exchange = @coin.exchange
     @btc_alert = btc_alert
   end
@@ -21,5 +21,10 @@ class CoinsController < ApplicationController
     AnalyzeCoinJob.perform_later(coin.id.to_s, periods, range, time.to_i)
 
     redirect_to coin_path(coin, analysis: { periods: periods, range: range, time: time.to_i, year: year, month: month, day: day, hour: hour, minute: minute })
+  end
+
+  def search
+    @search = Coin.search(params[:search].upcase) if params[:search]
+    render layout: false
   end
 end

@@ -32,5 +32,16 @@
         <a class="nav-link disabled" href="#">Señales</a>
       </li>
     </ul>
+    <%= form_tag(search_coin_path, method: :get, class: 'my-2 my-lg-0 float-md-right') do %>
+      <div class="input-group">
+        <%= text_field_tag :search, '', placeholder: 'Moneda', class: 'form-control', autocomplete: :off %>
+        <div class="input-group-append">
+          <%= submit_tag "Buscar", class: 'btn btn-outline-success' %>
+          <%= submit_tag "All", class: 'btn btn-outline-success' %>
+        </div>
+      </div>
+    <% end %>
+
+    <div id="live-search-results"></div>
   </div>
 </nav>
