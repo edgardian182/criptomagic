@@ -6,6 +6,7 @@ class DailyJobs
 
   def perform
     ClearCandlesJob.perform_later
+    ClearAnalizeResultsJob.perform_later
     Exchange.each do |exchange|
       CreateCoinsJob.perform_later(exchange.id.to_s)
     end
