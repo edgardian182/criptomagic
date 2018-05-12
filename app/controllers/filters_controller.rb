@@ -19,6 +19,12 @@ class FiltersController < ApplicationController
 
     time = Time.local(year, month, day, hour, minute)
 
+    if time > Time.now
+      flash[:error] = "Error en el tiempo introducido"
+      redirect_to filters_path
+      return
+    end
+
     AnalyzeFilterJob.perform_later(exchange.id.to_s, periods, range, filter, time.to_i)
     # exchange.analyze_coins(range, filter, time)
 

@@ -34,7 +34,7 @@ class Binance < Exchange
       c[:close_time] = Time.at(candle[6] / 1000)
       c[:trades] = candle[8]
       c[:symbol] = symbol
-      c[:closed] = time >= Time.at(candle[6] / 1000)
+      c[:closed] = Time.now >= Time.at(candle[6] / 1000)
       candles << c
     end
 

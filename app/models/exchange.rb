@@ -130,7 +130,9 @@ class Exchange
     FLAGS
   end
 
-  def analyze_coins(range, flag = '', time = Time.now, all: true)
+  def analyze_coins(periods, range, flag = '', time = Time.now, all: true)
+    return logger.info 'Time parameter surpass actual time for an analysis' if time > Time.now
+
     mins = %w[1m 3m 5m 15m 30m].include?(range) ? range.to_i : 60 # Used for time_formatting
     time = time_formatting(mins, time)
 

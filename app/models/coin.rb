@@ -109,7 +109,12 @@ class Coin
     candles_info[:coin_id] = id
     candles_info[:exchange_id] = exchange.id
 
-    Candle.create(candles_info)
+    logger.info "Candle hasn't been created because it's not closed" unless candles_info[:closed]
+    if candles_info[:closed]
+      Candle.create(candles_info)
+    else
+      candles_info
+    end
   end
 
   def show_candlestricks(periods, range, time = Time.now)
@@ -174,6 +179,8 @@ class Coin
   end
 
   def analyze(periods, range, time = Time.now)
+    return logger.info 'Time parameter surpass actual time for an analysis' if time > Time.now
+
     mins = %w[1m 3m 5m 15m 30m].include?(range) ? range.to_i : 60 # Used for time_formatting
     time = time_formatting(mins, time)
 
