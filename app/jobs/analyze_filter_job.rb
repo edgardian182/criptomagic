@@ -6,9 +6,9 @@ class AnalyzeFilterJob < ApplicationJob
 
     if time
       t = Time.at(time)
-      exchange.analyze_coins(range, filter, t)
+      exchange.analyze_coins(periods, range, filter, t)
     else
-      exchange.analyze_coins(range, filter)
+      exchange.analyze_coins(periods, range, filter)
     end
   end
 end

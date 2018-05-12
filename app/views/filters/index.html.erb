@@ -26,7 +26,7 @@
         <div class="input-group-prepend">
           <%= label_tag :periods, 'Periodos', class: 'input-group-text' %>
         </div>
-        <%= number_field_tag :periods, :quantity, in: 1..24, step: 1, value: params[:analysis] ? params[:analysis][:periods].to_i : 1, class: 'form-control col' %>
+        <%= number_field_tag :periods, :quantity, in: 1..4, step: 1, value: params[:analysis] ? params[:analysis][:periods].to_i : 1, class: 'form-control col' %>
       </div>
     </div>
     <div class='form-group col-6'>
@@ -87,7 +87,7 @@
 
 <!-- `ANALYSIS TABLE ` -->
 <% if params['analysis'] %>
-  <% analysis = Exchange.find(params[:analysis][:exchange]).analyze_coins(params[:analysis][:range], params[:analysis][:filter], Time.at(params[:analysis][:time].to_i)) %>
+  <% analysis = Exchange.find(params[:analysis][:exchange]).analyze_coins(params[:analysis][:periods], params[:analysis][:range], params[:analysis][:filter], Time.at(params[:analysis][:time].to_i)) %>
   <table class='table table-hover text-center'>
     <thead class='thead-dark'>
       <tr>
@@ -97,14 +97,18 @@
       </tr>
     </thead>
     <tbody>
-      <td><%= analysis.keys.first %></td>
-      <td>
-        <% analysis[analysis.keys.first].each do |symbol| %>
-          <% coin = Coin.where(symbol: symbol, exchange: params[:analysis][:exchange]).first %>
-          <%= link_to symbol, coin_path(coin, id: coin.id) %>
-        <% end %>
-      </td>
-      <td><%= analysis[analysis.keys.last] %></td>
+      <% analysis.each do |a| %>
+        <tr>
+          <td><%= a.keys.first %></td>
+          <td>
+            <% a[a.keys.first].each do |symbol| %>
+              <% coin = Coin.where(symbol: symbol, exchange: params[:analysis][:exchange]).first %>
+              <%= link_to symbol, coin_path(coin, id: coin.id) %>
+            <% end %>
+          </td>
+          <td><%= a[a.keys.last] %></td>
+        </tr>
+      <% end %>
     </tbody>
   </table>
 <% end %>

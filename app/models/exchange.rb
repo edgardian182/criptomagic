@@ -141,28 +141,38 @@ class Exchange
     flag = FLAGS[flag]
     flag = FLAGS['f1'] if flag.blank?
 
-    if AnalyzeResult.where(range: range, flag: flag, open_time: time, all_filters: all).exists?
-      result = AnalyzeResult.where(range: range, flag: flag, open_time: time, all_filters: all).first
-      return {
-        result.open_time => result.to_review,
-        flag: flag
-      }
+    analysis = []
+
+    count = 0
+    while count < periods.to_i
+      t0 = time - ((count + 1) * mins).minutes # open_time
+      t1 = time - (count * mins).minutes # close_time
+
+      if AnalyzeResult.where(range: range, flag: flag, close_time: t1, all_filters: all).exists?
+        result = AnalyzeResult.where(range: range, flag: flag, close_time: t1, all_filters: all).first
+        analysis << {
+                      result.close_time => result.to_review,
+                      flag: flag
+                    }
+      else
+        to_review = []
+        coins.each do |coin|
+          a = coin.analyze(2, range, t0)
+          alerts = a.values.first.values.flatten.uniq
+          to_review << coin.symbol if flag.all? { |f| alerts.include? f } && all
+          to_review << coin.symbol if flag.any? { |f| alerts.include? f } && !all
+          # to_review << coin.symbol if (a.values.first.values.flatten.uniq & flag).any?
+        end
+
+        result = AnalyzeResult.create(range: range, flag: flag, close_time: t1, to_review: to_review, all_filters: all)
+        analysis << {
+                      result.close_time => to_review,
+                      flag: flag
+                    }
+      end
+
+      count += 1
     end
-
-    to_review = []
-    coins.each do |coin|
-      a = coin.analyze(2, range)
-      alerts = a.values.first.values.flatten.uniq
-      to_review << coin.symbol if flag.all? { |f| alerts.include? f } && all
-      to_review << coin.symbol if flag.any? { |f| alerts.include? f } && !all
-      # to_review << coin.symbol if (a.values.first.values.flatten.uniq & flag).any?
-    end
-
-    result = AnalyzeResult.create(range: range, flag: flag, open_time: time, to_review: to_review, all_filters: all)
-
-    {
-      result.open_time => to_review,
-      flag: flag
-    }
+    analysis
   end
 end
