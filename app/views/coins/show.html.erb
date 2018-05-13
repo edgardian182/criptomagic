@@ -8,7 +8,16 @@
   </span>
 </h3>
 
-<h5>Volumen 24h: <span style='color: green'><%= format('%.2f', @coin.volume_24h_btc) if @coin.symbol != 'BTC' %> BTC<span></h5>
+<table>
+  <tr>
+    <th><h6>Precio:</h6></th>
+    <td style="padding-right: 20px; color: green"><h6><%= format('%.8f', @coin.price_btc) if @coin.price_btc%> BTC</h6></td>
+    <th><h6>Volumen 24h:</h6></th>
+    <th style="padding-right: 20px; color: green"><h6><%= format('%.2f', @coin.volume_24h_btc) if @coin.symbol != 'BTC' %> BTC</h6></th>
+  </tr>
+</table>
+
+<%= render 'volume_table', coin: @coin %>
 
  <!-- <%= link_to 'Gráfico', "http://es.tradingview.com/symbols/#{symbol}", target: '_blank', class: 'badge badge-pill badge-primary' %> -->
 
@@ -94,13 +103,13 @@
   <% if params['analysis'] %>
     <% analysis = @coin.analyze(params[:analysis][:periods].to_i, params[:analysis][:range], Time.at(params[:analysis][:time].to_i)) %>
     <table class='table table-hover text-center'>
-      <thead class='thead-dark'>
+      <thead class='thead-dark table-head'>
         <tr>
           <th>Tiempo</th>
           <th>Alertas</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody class="table-body">
         <% analysis[@coin.symbol].each do |a| %>
         <tr >
           <td><%= a[0] %></td>

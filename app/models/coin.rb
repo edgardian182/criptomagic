@@ -160,13 +160,17 @@ class Coin
     mins = INTERVALS[range]
 
     accumulated_volume = 0
+    accumulated_bought = 0
+    accumulated_sold = 0
 
     r.each do |candle|
-      accumulated_volume += candle.volume
+      accumulated_volume += candle.volume.to_f
+      accumulated_bought += candle.bought.to_f
+      accumulated_sold += candle.sold.to_f
     end
 
     # Muestras las velas de la más reciente a la más antigua
-    initial_price = r.last.last_price
+    initial_price = r.last.init_price
     end_price = r.first.last_price
 
     end_time = r.first.open_time + mins.minutes
@@ -175,7 +179,7 @@ class Coin
     price_change = (((end_price.to_f * 100) / initial_price.to_f) - 100).round(2)
     range_time = "#{start_time} / #{end_time}"
 
-    { symbol: symbol, accumulated_volume: accumulated_volume, initial_price: initial_price, end_price: end_price, price_change: "#{price_change}%", periods: periods, period_size: range, range_time: range_time }
+    { symbol: symbol, accumulated_volume: accumulated_volume, accumulated_bought: accumulated_bought, accumulated_sold: accumulated_sold, initial_price: initial_price, end_price: end_price, price_change: "#{price_change}%", periods: periods, period_size: range, range_time: range_time }
   end
 
   def analyze(periods, range, time = Time.now)

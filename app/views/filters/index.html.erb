@@ -93,21 +93,22 @@
 <% if params['analysis'] %>
   <% analysis = Exchange.find(params[:analysis][:exchange]).analyze_coins(params[:analysis][:periods], params[:analysis][:range], params[:analysis][:filter], Time.at(params[:analysis][:time].to_i)) %>
   <table class='table table-hover text-center'>
-    <thead class='thead-dark'>
+    <thead class='thead-dark table-head'>
       <tr>
         <th>Tiempo</th>
         <th>Monedas</th>
         <th>Flags</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody class="table-body">
       <% analysis.each do |a| %>
         <tr>
           <td><%= a.keys.first %></td>
           <td>
             <% a[a.keys.first].each do |symbol| %>
               <% coin = Coin.where(symbol: symbol, exchange: params[:analysis][:exchange]).first %>
-              <%= link_to symbol, coin_path(coin, id: coin.id) %>
+              <% v24 = coin.volume_24h_btc if coin.symbol != 'BTC' %>
+              <%= link_to symbol, coin_path(coin, id: coin.id), class: "#{v24 && v24 > 500 ? 'text-success' : '' }" %>
             <% end %>
           </td>
           <td><%= a[a.keys.last] %></td>

@@ -2,7 +2,7 @@
   <%= render 'layouts/search' %>
 </div>
 <table class='table table-hover text-center table-fixed'>
-  <thead class='thead-dark'>
+  <thead class='thead-dark table-head'>
     <tr>
       <th>Moneda</th>
       <th>Precio (BTC)</th>
@@ -10,7 +10,7 @@
       <th>Cambio 24H</th>
     </tr>
   </thead>
-  <tbody>
+  <tbody class="table-body">
     <% @exchange.coins.sort_by(&:symbol).each do |coin| %>
       <% next if @search && @search != coin %>
       <tr >

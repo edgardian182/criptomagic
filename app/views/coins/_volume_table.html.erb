@@ -1,0 +1,49 @@
+<% candle15 = coin.candles.where(range: '15m').last %>
+<% candle30 = coin.candles.where(range: '30m').last %>
+<% candle60 = coin.candles.where(range: '1h').last %>
+<% candle240 = coin.accumulated_volume(4, '1h') %>
+
+<table class='table table-hover text-center'>
+  <thead class='thead-dark'>
+    <tr>
+      <th></th>
+      <th></th>
+      <th>15M</th>
+      <th>30M</th>
+      <th>1H</th>
+      <th>4H</th>
+    </tr>
+  </thead>
+  <tbody>
+    <td rowspan="4">Vol</td>
+    <tr class='text-success'>
+      <td>sold</td>
+      <td ><%= format('%.2f', candle15.sold) %></td>
+      <td ><%= format('%.2f', candle30.sold) %></td>
+      <td ><%= format('%.2f', candle60.sold) %></td>
+      <td ><%= format('%.2f', candle240[:accumulated_sold]) %></td>
+    </tr>
+    <tr class='text-danger'>
+      <td>bought</td>
+      <td><%= format('%.2f', candle15.bought) %></td>
+      <td><%= format('%.2f', candle30.bought) %></td>
+      <td><%= format('%.2f', candle60.bought) %></td>
+      <td ><%= format('%.2f', candle240[:accumulated_bought]) %></td>
+    </tr>
+    <tr class='text-primary'>
+      <td>total</td>
+      <td><%= format('%.2f', candle15.volume) %></td>
+      <td><%= format('%.2f', candle30.volume) %></td>
+      <td><%= format('%.2f', candle60.volume) %></td>
+      <td ><%= format('%.2f', candle240[:accumulated_volume]) %></td>
+    </tr>
+    <tr>
+      <td colspan="1">Precio</td>
+      <td></td>
+      <td><%= candle15.price_movement %></td>
+      <td><%= candle30.price_movement %></td>
+      <td><%= candle60.price_movement %></td>
+      <td ><%= candle240[:price_change] %></td>
+    </tr>
+  </tbody>
+</table>
