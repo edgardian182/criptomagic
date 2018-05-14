@@ -48,4 +48,7 @@ Rails.application.configure do
   # Use an evented file watcher to asynchronously detect changes in source code,
   # routes, locales, etc. This feature depends on the listen gem.
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
+
+  # Limits log file size to 20 Mb
+  config.logger = ActiveSupport::Logger.new(config.paths['log'].first, 1, 20 * 1024 * 1024)
 end
