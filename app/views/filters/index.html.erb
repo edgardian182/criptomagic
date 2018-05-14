@@ -1,7 +1,3 @@
-<% flash.each do |key, value| %>
-  <%= content_tag :div, value, class: "flash #{key}" %>
-<% end %>
-
 <h1>Filtros <span class="badge badge-pill badge-<%= @btc_alert.blank? ? 'success' : 'danger' %>"> BTC</span> </h1>
 
 <%= form_tag(analyze_filter_path, method: :post) do %>

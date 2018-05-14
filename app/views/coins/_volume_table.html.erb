@@ -15,7 +15,7 @@
     </tr>
   </thead>
   <tbody>
-    <td rowspan="4">Vol</td>
+    <td rowspan="4" style='vertical-align: middle'>Vol</td>
     <tr class='text-success'>
       <td>sold</td>
       <td ><%= format('%.2f', candle15.sold) %></td>
@@ -39,7 +39,7 @@
     </tr>
     <tr>
       <td colspan="1">Precio</td>
-      <td></td>
+      <td><%= format('%.8f', coin.price_btc) if coin.price_btc%></td>
       <td><%= candle15.price_movement %></td>
       <td><%= candle30.price_movement %></td>
       <td><%= candle60.price_movement %></td>
