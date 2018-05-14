@@ -3,6 +3,8 @@ Rails.application.routes.draw do
   # get '/users/:id', to: 'users#show', as: 'user'
 
   root 'welcome#index'
+  get '/help', to: 'help#index', as: 'help'
+  get '/classes', to: 'classes#index', as: 'classes'
 
   # resources :coins, path: '/admin/coins'
   # scope module: 'admin' do

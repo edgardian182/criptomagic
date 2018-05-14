@@ -26,10 +26,13 @@
         <%= link_to 'Filtros', filters_path, class: 'nav-link' %>
       </li>
       <li class="nav-item <%= 'active' if @tab == :classes %>">
-        <a class="nav-link disabled" href="#">Clases</a>
+        <%= link_to 'Clases', classes_path, class: 'nav-link' %>
       </li>
       <li class="nav-item <%= 'active' if @tab == :signals %>">
         <a class="nav-link disabled" href="#">Señales</a>
+      </li>
+      <li class="nav-item <%= 'active' if @tab == :help %>">
+        <%= link_to 'Ayuda', help_path, class: 'nav-link' %>
       </li>
     </ul>
     <%= form_tag(search_coin_path, method: :get, class: 'my-2 my-lg-0 float-md-right') do %>

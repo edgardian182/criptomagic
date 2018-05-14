@@ -1,0 +1,63 @@
+<div class='text-justify'>
+  <h2>¿Qué es CriptoMagic?</h2>
+  <p>CriptoMagic es una herramienta que proporciona ayudas para encontrar el lugar (moneda) más apropiado para invertir tu dinero y sacarle los mejores rendimiento al mercado</p>
+
+  <h2 class='text-left'>¿Cómo empiezo a usar CriptoMagic?</h2>
+  <p>Existen dos herramientas principales en CriptoMagic:</p>
+  <h4>Filtros</h4>
+  <p>Ingresa, escoge uno de los filtros (f1-f13) y filtre las monedas que cumplan con su criterio en el rango de velas seleccionado.</p>
+
+  <table class='table table-hover'>
+    <thead class='thead-light'>
+      <tr>
+        <th>Filtro</th>
+        <th>Criterio</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% Exchange::FLAGS.each do |flag| %>
+        <tr>
+          <th><%= flag[0] %></td>
+          <td><%= flag[1] %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <table class='table table-hover text-justify'>
+    <thead class="thead-light">
+      <tr>
+        <th>Criterio</th>
+        <th>Descripción</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% FLAG_DESCRIPTIONS.each do |flag| %>
+        <tr>
+          <th><%= flag[0] %></td>
+          <td><%= flag[1] %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <p>El filtro <b>analizará las últimas dos velas terminadas</b> (Que ya hayan cerrado) de todas las monedas en el Exchange seleccionado y cada uno busca encontrar las monedas que tengan divergencias, un volumen en crecimiento, velas martillo (hammer_hight), entre otros patrones de aumento de precio.</p>
+  <p>Los filtros más completos como <b>f1</b> y <b>f11</b> pueden encontrar monedas con mayor posibilidad de subir</p>
+  <p><b>Si un filtro no encuentra monedas es porque no existen en el momento monedas que cumplan con su criterio en el rango seleccionado</b></p>
+  <p class='text-danger'><b>Recuerde:</b> Que una moneda aparezca en un filtro no es una garantía del 100% de que vaya a subir su valor debido a factores como fundamentales, movimientos inesperados del Bitcoin, entre otros; ellos búscan patrones en las monedas que <b>aumentan las posibilidades</b> de una subida de precio </p>
+
+  <br>
+  <h4>Análisis de monedas</h4>
+  <p>Busque una moneda por Exchange o en el formulario de búsqueda, analice su movimiento de volúmen y precio en los diferentes intervalos de tiempo y utilice la herramienta de <b>ANALIZAR</b> para encontrar las alertas que se van dando con cada nueva vela terminada</p>
+  <p>Alertas que contengan <b class='text-danger'>EXIT</b> suelen ser por caídas de precio o volúmen en la moneda y son una posible señal para no entrar en ella</p>
+
+  <h6>Volúmen</h6>
+  <ul style='text-align: left'>
+    <li><b class="text-success">sold:</b> Cantidad en BTC vendido de la moneda (<b class='text-success'>Positivo</b> para su aumento de precio)</li>
+    <li><b class="text-danger">bought:</b> Cantidad en BTC comprado de la moneda (<b class='text-danger'>Negativo</b> para su aumento de precio)</li>
+    <li><b class="text-primary">total:</b> Cantidad en BTC de volúmen incorporado Total a la moneda (Diferencia entre <b class="text-success">sold</b> y <b class="text-danger">bought</b>)</li>
+  </ul>
+  <p>Para un análisis más profundo utilice el link al <b>gráfico</b> de la moneda y apoyese en sus herramienta de análisis técnico, osciladores e indicadores. <b class="">Puede ingresar a <%= link_to 'CLASES', classes_path, class: 'text-primary' %> para conocer algunos de ellos</b></p>
+</div>
+
+<br><br><br>
