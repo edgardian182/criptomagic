@@ -1,5 +1,5 @@
 <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
-  <%= link_to 'CriptoMagic (BETA v1.0)', root_path, class: 'navbar-brand' %>
+  <%= link_to 'CriptoMagic v1.0.0', root_path, class: 'navbar-brand' %>
   <% if @exchange %>
     <%= link_to "#{@exchange.name.upcase}", exchange_path(@exchange), class: 'navbar-brand', style: 'color: yellow' %>
   <% end %>

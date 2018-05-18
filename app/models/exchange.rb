@@ -158,17 +158,28 @@ class Exchange
         to_review = []
         coins.each do |coin|
           a = coin.analyze(2, range, t0)
+          if a[coin.symbol][t0].nil?
+            to_review << 'no_candle'
+            break
+          end
           alerts = a.values.first.values.flatten.uniq
           to_review << coin.symbol if flag.all? { |f| alerts.include? f } && all
           to_review << coin.symbol if flag.any? { |f| alerts.include? f } && !all
           # to_review << coin.symbol if (a.values.first.values.flatten.uniq & flag).any?
         end
 
-        result = AnalyzeResult.create(range: range, flag: flag, close_time: t1, to_review: to_review, all_filters: all)
-        analysis << {
-                      result.close_time => to_review,
-                      flag: flag
-                    }
+        if to_review.include?('no_candle')
+          analysis << {
+            t1 => to_review,
+            flag: ['No se ha creado la vela, intenta de nuevo']
+          }
+        else
+          result = AnalyzeResult.create(range: range, flag: flag, close_time: t1, to_review: to_review, all_filters: all)
+          analysis << {
+                        result.close_time => to_review,
+                        flag: flag
+                      }
+        end
       end
 
       count += 1
