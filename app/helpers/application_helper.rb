@@ -4,7 +4,8 @@ module ApplicationHelper
       success: "alert-success",
       error: "alert-danger",
       notice: "alert-info",
-      warning: "alert-warning"
+      warning: "alert-warning",
+      alert: "alert-danger"
     }[flash_type.to_sym] || flash_type.to_s
   end
 
@@ -13,7 +14,8 @@ module ApplicationHelper
       success: "glyphicon-ok",
       error: "glyphicon-exclamation-sign",
       notice: "glyphicon-info-sign",
-      warning: "glyphicon-warning-sign"
+      warning: "glyphicon-warning-sign",
+      alert: "alert-danger"
     }[flash_type.to_sym] || 'glyphicon-screenshot'
   end
 end

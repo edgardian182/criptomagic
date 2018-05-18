@@ -17,3 +17,9 @@
 /yarn-error.log
 
 .byebug_history
+
+# Ignore Desktop_Service_Store files
+.DS_Store
+
+# Ignore application configuration
+/config/application.yml

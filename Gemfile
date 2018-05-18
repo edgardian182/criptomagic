@@ -5,6 +5,7 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
+gem "figaro"
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.1.5'
@@ -28,6 +29,9 @@ gem 'oj'
 
 gem 'bootstrap', '~> 4.1.0'
 gem 'jquery-rails'
+gem 'devise'
+gem 'devise-i18n'
+gem 'devise-bootstrapped', github: 'king601/devise-bootstrapped', branch: 'bootstrap4'
 
 # - jobs
 gem 'sidekiq'

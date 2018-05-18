@@ -171,7 +171,7 @@ class Exchange
         if to_review.include?('no_candle')
           analysis << {
             t1 => to_review,
-            flag: ['No se ha creado la vela, intenta de nuevo']
+            flag: ['No se ha creado la vela, has RESET e intenta de nuevo']
           }
         else
           result = AnalyzeResult.create(range: range, flag: flag, close_time: t1, to_review: to_review, all_filters: all)
