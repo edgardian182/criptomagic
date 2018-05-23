@@ -1,4 +1,4 @@
-class ClearAnalizeResultsJob < ApplicationJob
+class ClearAnalyzeResultsJob < ApplicationJob
   queue_as :low
 
   def perform
