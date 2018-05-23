@@ -15,7 +15,7 @@
       <h6><%= number_to_percentage(@coin.percent_change_24h, precision: 2) if @coin.percent_change_24h %></h6>
     </th>
     <th><h6>Volumen 24h:</h6></th>
-    <th style="padding-right: 20px;" class="text-success"><h6><%= format('%.2f', @coin.volume_24h_btc) if @coin.symbol != 'BTC' %> BTC</h6></th>
+    <th style="padding-right: 20px;" class="text-success"><h6><%= format('%.2f', @coin.volume_24h_btc) if @coin.volume_24h_btc && @coin.symbol != 'BTC' %> BTC</h6></th>
   </tr>
 </table>
 
