@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  </head>
+  <body>
+    <h1>Bienvenido a CriptoMagic, <%= @user.name %></h1>
+    <br>
+    <p>Te has registrado con éxito, tu nombre de usuario es: <strong><%= @user.username %></p></strong>
+    <p>Para iniciar sesión solo ingresa a <%= link_to @url, new_user_session_url %></p>
+    <br>
+    <p>Gracias por ser parte de nuestra comunidad, feliz día</p>
+  </body>
+</html>
