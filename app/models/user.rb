@@ -37,6 +37,17 @@ class User
   # field :unlock_token,    type: String # Only if unlock strategy is :email or :both
   # field :locked_at,       type: Time
 
+  field :admin, type: Boolean, default: false
+  field :expire_access, type: Time, default: Time.now + 3.days
+
   validates_uniqueness_of :username
   validates_presence_of :username, :name, :lastname
+
+  def expired_access?
+    expire_access < Time.now
+  end
+
+  def add_expire_time(days)
+    set(expire_access: expire_access + days.days)
+  end
 end
