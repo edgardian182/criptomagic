@@ -32,7 +32,7 @@ module CriptoApp
     config.generators.system_tests = nil
 
     config.i18n.default_locale = :es
-    config.time_zone = 'Bogota'
+    config.time_zone = 'America/Bogota'
 
     # Configure fallbacks for mongoid errors:
     I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)

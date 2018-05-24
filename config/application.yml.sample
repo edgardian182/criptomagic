@@ -1,0 +1,8 @@
+# Mailing
+SENDMAIL_USERNAME: email@example.com
+SENDMAIL_PASSWORD: emailpass
+MAIL_HOST: localhost:3000
+
+# DB
+MONGODB_URI: mongodb://exampe
+REDIS_URL: redis://example

@@ -1,5 +1,5 @@
 <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
-  <%= link_to 'CriptoMagic v1.0.0', root_path, class: 'navbar-brand' %>
+  <%= link_to 'CriptoMagic', root_path, class: 'navbar-brand' %>
   <% if @exchange %>
     <%= link_to "#{@exchange.name.upcase}", exchange_path(@exchange), class: 'navbar-brand', style: 'color: yellow' %>
   <% end %>
@@ -19,9 +19,6 @@
           <% end %>
         </div>
       </li>
-      <li class="nav-item">
-        <a class="nav-link disabled <%= 'active' if @tab == :portfolio %>" href="#">Portafolio</a>
-      </li>
       <li class="nav-item <%= 'active' if @tab == :filters %>">
         <%= link_to 'Filtros', filters_path, class: 'nav-link' %>
       </li>
@@ -31,9 +28,29 @@
       <li class="nav-item <%= 'active' if @tab == :signals %>">
         <a class="nav-link disabled" href="#">Señales</a>
       </li>
-      <li class="nav-item <%= 'active' if @tab == :help %>">
-        <%= link_to 'Ayuda', help_path, class: 'nav-link' %>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle <%= 'active' if @tab == :help %>" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Ayuda
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <%= link_to 'Introducción', help_path, class: 'dropdown-item' %>
+          <div class="dropdown-divider"></div>
+          <%= link_to 'CriptoMagic v1.0.0', '#', class: 'dropdown-item' %>
+        </div>
       </li>
+      <% if current_user %>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Perfil
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <%= link_to current_user.email, '#', class: 'dropdown-item' %>
+            <a class="dropdown-item disabled <%= 'active' if @tab == :portfolio %>" href="#">Portafolio</a>
+            <div class="dropdown-divider"></div>
+            <%= link_to 'Cerrar sesión', destroy_user_session_path, method: :delete, class: 'dropdown-item' %>
+          </div>
+        </li>
+      <% end %>
     </ul>
     <%= form_tag(search_coin_path, method: :get, class: 'my-2 my-lg-0 float-md-right') do %>
       <div class="input-group">
