@@ -60,7 +60,7 @@
           <div class="input-group-prepend">
             <%= label_tag :day, 'Día', class: 'input-group-text' %>
           </div>
-          <%= select_day params[:analysis] ? params[:analysis][:day].to_i : Time.now, {}, { class: 'custom-select' } %>
+          <%= select_day params[:analysis] ? params[:analysis][:day].to_i : Time.current, {}, { class: 'custom-select' } %>
         </div>
         <div class="input-group mb-1">
           <div class="input-group-prepend">
@@ -82,13 +82,13 @@
           <div class="input-group-prepend">
             <%= label_tag :hour, 'Hora', class: 'input-group-text' %>
           </div>
-          <%= select_hour params[:analysis] ? params[:analysis][:hour].to_i : Time.now, {}, { class: 'form-control col' } %>
+          <%= select_hour params[:analysis] ? params[:analysis][:hour].to_i : Time.current, {}, { class: 'form-control col' } %>
         </div>
         <div class="input-group mb-1">
           <div class="input-group-prepend">
             <%= label_tag :minute, 'Minuto', class: 'input-group-text' %>
           </div>
-          <%= select_minute params[:analysis] ? params[:analysis][:minute].to_i : Time.now, {}, { class: 'form-control col' } %>
+          <%= select_minute params[:analysis] ? params[:analysis][:minute].to_i : Time.current, {}, { class: 'form-control col' } %>
         </div>
         <!-- <%= datetime_select :date, :time %> -->
       </div>
