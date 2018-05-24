@@ -4,7 +4,12 @@ Rails.application.routes.draw do
   # get '/users/:id', to: 'users#show', as: 'user'
 
   root 'welcome#index'
+
+  # HELP
   get '/help', to: 'help#index', as: 'help'
+  get '/donations', to: 'help#donations', as: 'donations'
+
+  # CLASES
   get '/classes', to: 'classes#index', as: 'classes'
 
   # resources :coins, path: '/admin/coins'
