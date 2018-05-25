@@ -8,39 +8,7 @@
   <h4>Filtros</h4>
   <p>Ingresa, escoge uno de los filtros (f1-f13) y filtre las monedas que cumplan con su criterio en el rango de velas seleccionado.</p>
 
-  <table class='table table-hover'>
-    <thead class='thead-light'>
-      <tr>
-        <th>Filtro</th>
-        <th>Criterio</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% Exchange::FLAGS.each do |flag| %>
-        <tr>
-          <th><%= flag[0] %></td>
-          <td><%= flag[1] %></td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-
-  <table class='table table-hover text-justify'>
-    <thead class="thead-light">
-      <tr>
-        <th>Criterio</th>
-        <th>Descripción</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% FLAG_DESCRIPTIONS.each do |flag| %>
-        <tr>
-          <th><%= flag[0] %></td>
-          <td><%= flag[1] %></td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
+  <%= render 'shared/filters-table' %>
 
   <p>El filtro <b>analizará las últimas dos velas terminadas</b> (Que ya hayan cerrado) de todas las monedas en el Exchange seleccionado y cada uno busca encontrar las monedas que tengan divergencias, un volumen en crecimiento, velas martillo (hammer_hight), entre otros patrones de aumento de precio.</p>
   <p>Los filtros más completos como <b>f1</b> y <b>f11</b> pueden encontrar monedas con mayor posibilidad de subir</p>

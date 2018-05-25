@@ -1,0 +1,33 @@
+<table class='table table-hover'>
+  <thead class='thead-light'>
+    <tr>
+      <th>Filtro</th>
+      <th>Criterio</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% Exchange::FLAGS.each do |flag| %>
+      <tr>
+        <th><%= flag[0] %></td>
+        <td><%= flag[1] %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<table class='table table-hover text-justify'>
+  <thead class="thead-light">
+    <tr>
+      <th>Criterio</th>
+      <th>Descripción</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% FLAG_DESCRIPTIONS.each do |flag| %>
+      <tr>
+        <th><%= flag[0] %></td>
+        <td><%= flag[1] %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
