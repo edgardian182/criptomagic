@@ -1,5 +1,5 @@
 <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
-  <%= link_to 'CriptoMagic', root_path, class: 'navbar-brand' %>
+  <%= link_to "Cripto<span class='text-danger'>M</span>agic".html_safe, root_path, class: 'navbar-brand' %>
   <% if @exchange %>
     <%= link_to "#{@exchange.name.upcase}", exchange_path(@exchange), class: 'navbar-brand', style: 'color: yellow' %>
   <% end %>
@@ -26,7 +26,7 @@
         <%= link_to 'Clases', classes_path, class: 'nav-link' %>
       </li>
       <li class="nav-item <%= 'active' if @tab == :signals %>">
-        <a class="nav-link disabled" href="#">Señales</a>
+        <!-- <a class="nav-link disabled" href="#">Señales</a> -->
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle <%= 'active' if @tab == :help %>" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -34,7 +34,7 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <%= link_to 'Introducción', help_path, class: 'dropdown-item' %>
-          <%= link_to 'Donaciones', donations_path, class: 'dropdown-item' %>
+          <%= link_to 'Aporta!', donations_path, class: 'dropdown-item' %>
           <div class="dropdown-divider"></div>
           <%= link_to 'CriptoMagic v1.0.0', '#', class: 'dropdown-item' %>
         </div>
@@ -42,12 +42,12 @@
 
       <% if current_user %>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <a class="nav-link dropdown-toggle active text-success" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Perfil
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
             <%= link_to current_user.email, '#', class: 'dropdown-item' %>
-            <a class="dropdown-item disabled <%= 'active' if @tab == :portfolio %>" href="#">Portafolio</a>
+            <!-- <a class="dropdown-item disabled <%= 'active' if @tab == :portfolio %>" href="#">Portafolio</a> -->
             <div class="dropdown-divider"></div>
             <%= link_to 'Cerrar sesión', destroy_user_session_path, method: :delete, class: 'dropdown-item' %>
           </div>

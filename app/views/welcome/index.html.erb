@@ -1,6 +1,13 @@
+<% if current_user && (current_user.sign_in_count <= 1) %>
+  <div class="alert alert-primary alert-dismissible fade show">
+    <button class="close" data-dismiss="alert">×</button>
+    Antes de comenzar a usar CriptoMagic no te olvides de revisar la sección de <%= link_to 'AYUDA', help_path %> para aprender más sobre su uso!
+  </div>
+<% end %>
+
 <div class='jumbotron jumbotron-fluid'>
   <div class='container'>
-    <h1>Cripto Magic</h1>
+    <h1>Cripto<span class="text-danger">M</span>agic</h1>
     <p>Apunta y dispara tu dinero donde está el movimiento del mercado</p>
   </div>
 </div>

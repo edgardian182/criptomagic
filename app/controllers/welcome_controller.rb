@@ -3,5 +3,6 @@ class WelcomeController < ApplicationController
 
   def index
     @exchanges = Exchange.all
+    render layout: "launch_page"
   end
 end

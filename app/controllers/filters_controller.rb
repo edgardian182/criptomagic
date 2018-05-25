@@ -1,7 +1,6 @@
 class FiltersController < ApplicationController
   def index
     @tab = :filters
-    @btc_alert = btc_alert
   end
 
   def analyze

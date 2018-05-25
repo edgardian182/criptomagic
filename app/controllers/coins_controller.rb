@@ -3,7 +3,6 @@ class CoinsController < ApplicationController
     @coin = params[:search] ? Coin.search(params[:search]) : Coin.find(params[:id])
     if @coin
       @exchange = @coin.exchange
-      @btc_alert = btc_alert
     else
       @exchange = Exchange.first
       redirect_to exchange_path(@exchange)

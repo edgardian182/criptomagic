@@ -44,6 +44,7 @@
 
   <p>El filtro <b>analizará las últimas dos velas terminadas</b> (Que ya hayan cerrado) de todas las monedas en el Exchange seleccionado y cada uno busca encontrar las monedas que tengan divergencias, un volumen en crecimiento, velas martillo (hammer_hight), entre otros patrones de aumento de precio.</p>
   <p>Los filtros más completos como <b>f1</b> y <b>f11</b> pueden encontrar monedas con mayor posibilidad de subir</p>
+  <p>Una vez el filtro encuentre monedas podrá acceder a ellas al pulsar sobre estas donde, aquellas que estén en color <span class='text-success'><b>verde</b></span>, son monedas que han movido <span class='text-success'><b>más de 500 BTC en volúmen</b></span> en las últimas 24 horas</p>
   <p><b>Si un filtro no encuentra monedas es porque no existen en el momento monedas que cumplan con su criterio en el rango seleccionado</b></p>
   <p class='text-danger'><b>Recuerde:</b> Que una moneda aparezca en un filtro no es una garantía del 100% de que vaya a subir su valor debido a factores como fundamentales, movimientos inesperados del Bitcoin, entre otros; ellos búscan patrones en las monedas que <b>aumentan las posibilidades</b> de una subida de precio </p>
 
@@ -60,5 +61,8 @@
   </ul>
   <p>Para un análisis más profundo utilice el link al <b>gráfico</b> de la moneda y apoyese en sus herramienta de análisis técnico, osciladores e indicadores. <b class="">Puede ingresar a <%= link_to 'CLASES', classes_path, class: 'text-primary' %> para conocer algunos de ellos</b></p>
 </div>
+
+<hr>
+<p><span class="badge badge-pill badge-<%= btc_alert.blank? ? 'success' : 'danger' %>"> BTC</span> es una etiqueta que verás en la APP y cuando está de color <span class='text-success'><b>VERDE</b></span> indica que la ultima <b>vela cerrada</b> de 15 minutos del Bitcoin (BTC) ha tenido movimientos positivos y si está de color <span class='text-danger'><b>ROJO</b></span> que ha tenido movimientos negativos; esto con el fin de monitorear un poco el movimiento del BTC a la hora de analizar una posible entrada en el mercado</p>
 
 <br><br><br>
