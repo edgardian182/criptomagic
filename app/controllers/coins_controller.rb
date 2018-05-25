@@ -22,6 +22,16 @@ class CoinsController < ApplicationController
     time = Time.local(year, month, day, hour, minute)
     coin = Coin.find(params[:coin_id])
 
+    if time > Time.now
+      flash[:error] = "Error en el tiempo introducido"
+      redirect_to coin
+      return
+    elsif time < (Time.now - 3.days)
+      flash[:error] = "Error en el tiempo introducido"
+      redirect_to coin
+      return
+    end
+
     AnalyzeCoinJob.perform_later(coin.id.to_s, periods, range, time.to_i)
 
     redirect_to coin_path(coin, analysis: { periods: periods, range: range, time: time.to_i, year: year, month: month, day: day, hour: hour, minute: minute })

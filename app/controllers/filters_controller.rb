@@ -22,6 +22,10 @@ class FiltersController < ApplicationController
       flash[:error] = "Error en el tiempo introducido"
       redirect_to filters_path
       return
+    elsif time < (Time.now - 3.days)
+      flash[:error] = "Error en el tiempo introducido"
+      redirect_to filters_path
+      return
     end
 
     AnalyzeFilterJob.perform_later(exchange.id.to_s, periods, range, filter, time.to_i)
