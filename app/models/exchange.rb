@@ -156,10 +156,12 @@ class Exchange
                     }
       else
         to_review = []
+        no_candle_for = []
         coins.each do |coin|
           a = coin.analyze(2, range, t0)
           if a[coin.symbol][t0].nil?
             to_review << 'no_candle'
+            no_candle_for << coin.symbol
             break
           end
           alerts = a.values.first.values.flatten.uniq
@@ -171,7 +173,8 @@ class Exchange
         if to_review.include?('no_candle')
           analysis << {
             t1 => to_review,
-            flag: ['No se ha creado la vela, has RESET e intenta de nuevo']
+            flag: ['No se ha creado la vela, has RESET e intenta de nuevo'],
+            no_candle_for: no_candle_for
           }
         else
           result = AnalyzeResult.create(range: range, flag: flag, close_time: t1, to_review: to_review, all_filters: all)

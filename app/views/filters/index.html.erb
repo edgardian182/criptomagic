@@ -25,7 +25,7 @@
               <%= link_to symbol, coin ? coin_path(coin, id: coin.id) : '', class: "#{v24 && v24 > 500 ? 'text-success' : '' }" %>
             <% end %>
           </td>
-          <td><%= a[a.keys.last] %></td>
+          <td><%= a[:flag] %></td>
         </tr>
       <% end %>
     </tbody>
