@@ -73,16 +73,26 @@ class Coin
   end
 
   # Mas rapido que generate_candle
-  def self.new_candle(exchange_id, range = '15m', time = Time.now)
-    mins = %w[1m 3m 5m 15m 30m].include?(range) ? range.to_i : 60 # Used for time_formatting
-    time = time_formatting(mins, time)
-    t0 = time - mins.minutes
+  def self.new_candle(exchange_id, range = '15m', time = Time.now, all: true)
+    process = lambda do |ex_id, ran, t|
+      mins = %w[1m 3m 5m 15m 30m].include?(ran) ? ran.to_i : 60 # Used for time_formatting
+      time = time_formatting(mins, t)
+      t0 = time - mins.minutes
 
-    exchange = Exchange.find(exchange_id)
-    total_coins = exchange.coins.count
-    last_candles = Candle.where(range: range, open_time: t0, exchange: exchange).count
+      exchange = Exchange.find(ex_id)
+      total_coins = exchange.coins.count
+      last_candles = Candle.where(range: ran, open_time: t0, exchange: exchange).count
 
-    NewCandleJob.perform_later(exchange_id.to_s, range) if total_coins != last_candles
+      NewCandleJob.perform_later(ex_id.to_s, ran) if total_coins != last_candles
+    end
+
+    if all
+      %w[15m 30m 1h].each do |interval|
+        process.call(exchange_id, interval, time)
+      end
+    else
+      process.call(exchange_id, range, time)
+    end
   end
 
   def self.generate_candle(exchange_id, range = '15m')

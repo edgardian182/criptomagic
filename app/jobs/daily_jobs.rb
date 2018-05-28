@@ -5,10 +5,11 @@ class DailyJobs
   sidekiq_options queue: 'low'
 
   def perform
-    ClearCandlesJob.perform_later
-    ClearAnalyzeResultsJob.perform_later
-    Exchange.each do |exchange|
-      CreateCoinsJob.perform_later(exchange.id.to_s)
-    end
+    # Search and create new coins
+    Exchange.each(&:create_coins)
+
+    # Clear Candles and Analysis
+    Candle.where(:open_time.lt => Time.now - 1.week).each(&:destroy)
+    AnalyzeResult.where(:close_time.lt => Time.now - 1.week).each(&:destroy)
   end
 end

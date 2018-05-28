@@ -5,12 +5,9 @@ class CronWorker
 
   def perform
     Exchange.each do |exchange|
-      Coin.new_candle(exchange.id, '15m')
-      Coin.new_candle(exchange.id, '30m')
-      # NewCandleJob.perform_later(b.id.to_s, '15m')
-      Coin.new_candle(exchange.id, '1h')
+      Coin.new_candle(exchange.id)
 
-      UpdateCoinsJob.perform_later(exchange.id.to_s) if Time.now.min % 5 == 0
+      UpdateCoinsJob.perform_later(exchange.id.to_s) if Time.now.min % 7 == 0
     end
   end
 end
