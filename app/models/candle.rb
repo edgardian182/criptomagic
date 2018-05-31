@@ -31,7 +31,7 @@ class Candle
 
   # - indexes
   index({ exchange_id: 1, range: 1, open_time: -1 }, background: true)
-  index({ coin_id: 1, range: 1, open_time: -1 }, background: true)
+  index({ coin_id: 1, range: 1, open_time: -1 }, background: true, unique: true)
   index({ range: 1, open_time: -1 }, background: true)
 
   def hammer?

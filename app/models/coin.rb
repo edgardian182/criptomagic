@@ -112,7 +112,7 @@ class Coin
     mins = INTERVALS[range]
 
     t0 = time - mins.minutes
-    return logger.info 'Candle already exists' if candles.where(range: range, open_time: t0).exists?
+    return logger.info "Candle for #{symbol} at #{t0} (#{range}) already exists" if candles.where(range: range, open_time: t0).exists?
 
     candles_info = exchange.last_candlestick_for(symbol, range, time).last
     return if candles_info.is_a? String
