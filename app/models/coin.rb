@@ -3,6 +3,7 @@ class Coin
   include Mongoid::Timestamps
   include TimeHandler
   extend TimeHandler
+  include EventsHandler
 
   # - fields -
   field :name, type: String
