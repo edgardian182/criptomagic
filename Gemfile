@@ -33,7 +33,7 @@ gem 'bootstrap', '~> 4.1.0'
 gem 'jquery-rails'
 gem 'devise'
 gem 'devise-i18n'
-gem 'devise-bootstrapped', github: 'king601/devise-bootstrapped', branch: 'bootstrap4'
+# gem 'devise-bootstrapped', github: 'king601/devise-bootstrapped', branch: 'bootstrap4'
 
 # - jobs
 gem 'sidekiq'
@@ -65,6 +65,7 @@ group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'rspec-rails', '~> 3.7'
   gem 'pry'
+  gem 'pry-byebug'
   gem 'derailed_benchmarks'
 end
 

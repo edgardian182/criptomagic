@@ -39,6 +39,18 @@ class Exchange
     false
   end
 
+  def last_candlestick_for(symbol, range = '15m', time = Time.now)
+    []
+  end
+
+  def symbols
+    []
+  end
+
+  def daily_coin_data(symbol = nil)
+    []
+  end
+
   def market
     @market ||= MarketcapClient.new
   end
@@ -61,6 +73,7 @@ class Exchange
     exchange_symbols = symbols
     exchange_symbols.uniq!
     count = exchange_symbols.count
+    return logger.info "There are no Exchange Symbols defined" if count == 0
     coins_info = market.coins_info
     coins_info.each do |coin|
       next unless exchange_symbols.include? coin['symbol']
@@ -92,6 +105,7 @@ class Exchange
   end
 
   def update_coins
+    count = coins.count
     coins_info = market.coins_info
     coins_info.each do |coin|
       next unless coins.where(symbol: coin['symbol']).exists?
@@ -104,6 +118,8 @@ class Exchange
       outdated_coin = coins.where(symbol: coin['symbol']).first
       outdated_coin.update(coin) if outdated_coin.updated_at < (Time.now - 1.minutes)
       outdated_coin.set(updated_at: Time.now)
+      count -= 1
+      break if count == 0
     end
   end
 

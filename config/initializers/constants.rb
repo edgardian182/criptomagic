@@ -16,49 +16,12 @@ INTERVALS = {
   '1M' => 40_320
 }.freeze
 
-BINANCE_COINS = [
-  "ETH",
-  "LTC",
-  "BNB",
-  "NEO",
-  "BCC",
-  "GAS",
-  "HSR",
-  "MCO",
-  "WTC",
-  "LRC",
-  "QTUM",
-  "YOYO",
-  "OMG",
-  "ZRX",
-  "STRAT",
-  "SNGLS",
-  "BQX",
-  "KNC",
-  "FUN",
-  "SNM",
-  "IOTA",
-  "LINK",
-  "XVG",
-  "CTR",
-  "SALT",
-  "MDA",
-  "MTL",
-  "SUB",
-  "EOS",
-  "SNT",
-  "ETC",
-  "MTH",
-  "ENG", "DNT", "ZEC", "BNT", "AST", "DASH", "OAX", "ICN", "BTG", "EVX", "REQ", "VIB", "TRX", "POWR", "ARK", "XRP", "MOD", "ENJ", "STORJ", "VEN",
-  "KMD", "RCN", "NULS", "RDN", "XMR", "DLT", "AMB", "BAT", "BCPT", "ARN", "GVT", "CDT", "GXS", "POE", "QSP", "BTS", "XZC", "LSK", "TNT", "FUEL",
-  "MANA", "BCD", "DGD", "ADX", "ADA", "PPT", "CMT", "XLM", "CND", "LEND", "WABI", "TNB", "WAVES", "GTO", "ICX", "OST", "ELF", "AION", "NEBL", "BRD", "EDO", "WINGS", "NAV", "LUN", "TRIG", "APPC", "VIBE", "RLC", "INS", "PIVX", "IOST", "CHAT", "STEEM", "NANO", "VIA", "BLZ", "AE", "RPX", "NCASH", "POA", "ZIL", "ONT", "STORM"]
-
-  FLAG_DESCRIPTIONS = {
-    'price_possible_divergence' => 'Detecta una posible divergencia por un aumento de precio a pesar de un volúmen bajo',
-    'accumulated_price_divergence' => 'Detecta una posible divergencia en el precio teniendo en cuenta el volumen acumulado en las últimas velas',
-    'hammer_hight' => 'Detecta la formación de una vela martillo',
-    'volume_hight' => 'Detecta que ha habido un aumento de volúmen',
-    'continuous_possible_price_up' => 'Detecta que han habido 3 velas seguidas con aumento de precio',
-    'pump' => 'Detecta que ha habido un PUMP (aumento súbito del precio)',
-    'dump' => 'Detecta que ha habido un DUMP (disminución súbita de precio)'
-  }
+FLAG_DESCRIPTIONS = {
+  'price_possible_divergence' => 'Detecta una posible divergencia por un aumento de precio a pesar de un volúmen bajo',
+  'accumulated_price_divergence' => 'Detecta una posible divergencia en el precio teniendo en cuenta el volumen acumulado en las últimas velas',
+  'hammer_hight' => 'Detecta la formación de una vela martillo',
+  'volume_hight' => 'Detecta que ha habido un aumento de volúmen',
+  'continuous_possible_price_up' => 'Detecta que han habido 3 velas seguidas con aumento de precio',
+  'pump' => 'Detecta que ha habido un PUMP (aumento súbito del precio)',
+  'dump' => 'Detecta que ha habido un DUMP (disminución súbita de precio)'
+}.freeze

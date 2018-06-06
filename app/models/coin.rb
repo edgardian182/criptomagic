@@ -30,8 +30,8 @@ class Coin
   validate :exchange_uniqueness, on: :create
 
   # - indexes
-  index(exchange_id: 1)
-  index(symbol: 1)
+  index({ exchange_id: 1 }, background: true)
+  index({ symbol: 1 }, background: true)
 
   def last_updated
     Time.at(self[:last_updated])
@@ -115,7 +115,7 @@ class Coin
     return logger.info "Candle for #{symbol} at #{t0} (#{range}) already exists" if candles.where(range: range, open_time: t0).exists?
 
     candles_info = exchange.last_candlestick_for(symbol, range, time).last
-    return if candles_info.is_a? String
+    return if candles_info.is_a?(String) || candles_info.blank?
     candles_info[:coin_id] = id
     candles_info[:exchange_id] = exchange.id
 
@@ -167,6 +167,7 @@ class Coin
 
   def accumulated_volume(periods, range, time = Time.now)
     r = show_candles(periods, range, time)
+    return if r.blank?
     mins = INTERVALS[range]
 
     accumulated_volume = 0
