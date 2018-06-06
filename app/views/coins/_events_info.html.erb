@@ -1,0 +1,59 @@
+<!-- EVENTS INFO -->
+<div class="collapse" id="eventsInfo">
+  <div class="card card-body">
+    <div class="row">
+
+      <% coin.events.each do |event| %>
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 my-2 d-flex align-items-stretch">
+          <div class="card text-center w-100">
+            <div class="card-header">
+              <strong><%= event.title %></strong>
+            </div>
+            <div class="card-body">
+              <h6 class="card-title text-success"><%= (event.date_event + 13.hours).strftime("%d %B %Y") %></h6>
+              <p class="card-text"><%= event.description %></p>
+            </div>
+            <div class="my-2">
+              <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#<%= event.id.to_s %>proofModalCenter">
+                Prueba
+              </button>
+              <a href="<%= event.source %>" target="_blank" class="btn btn-outline-primary">Fuente</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="<%= event.id.to_s %>proofModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="float-right">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div>
+                  <%= image_tag "#{event.proof}", class: "img-thumbnail img-fluid" %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <% if coin.events.blank? %>
+        <div class="card-body">
+          <p>No hay eventos registrados</p>
+        </div>
+      <% end %>
+
+    </div>
+
+    <br>
+    <button class="btn btn-success" type="button" data-toggle="collapse" data-target="#eventsInfo" aria-expanded="false" aria-controls="filtersInfo">
+      <i class="fas fa-angle-up fa-lg"></i>
+    </button>
+    <small class="text-muted">Proporcionados por CoinMarketCal</small>
+  </div>
+  <br>
+</div>

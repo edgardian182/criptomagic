@@ -4,7 +4,7 @@
 
   <h2 class='text-left'>¿Cómo empiezo a usar CriptoMagic?</h2>
   <p>Existen dos herramientas principales en CriptoMagic:</p>
-  <p class='text-danger'><span><b>NOTA:</b></span> Estas herramientas usan tiempos y de manera automática se tendrá la hora actual preestablecida. El tiempo del servidor es => <%= Time.now %>
+  <p class='text-danger'><span><b>NOTA:</b></span> Estas herramientas usan tiempos y de manera automática se tendrá la hora actual preestablecida. El tiempo del servidor es => <%= Time.now.strftime("%d-%B-%Y %H:%M:%S %Z") %>
   <h4>Filtros</h4>
   <p>Ingresa, escoge uno de los filtros (f1-f13) y filtre las monedas que cumplan con su criterio en el rango de velas seleccionado.</p>
 
@@ -12,7 +12,7 @@
 
   <p>El filtro <b>analizará las últimas dos velas terminadas</b> (Que ya hayan cerrado) de todas las monedas en el Exchange seleccionado y cada uno busca encontrar las monedas que tengan divergencias, un volumen en crecimiento, velas martillo (hammer_hight), entre otros patrones de aumento de precio.</p>
   <p>Los filtros más completos como <b>f1</b> y <b>f11</b> pueden encontrar monedas con mayor posibilidad de subir</p>
-  <p>Una vez el filtro encuentre monedas podrá acceder a ellas al pulsar sobre estas donde, aquellas que estén en color <span class='text-success'><b>verde</b></span>, son monedas que han movido <span class='text-success'><b>más de 500 BTC en volúmen</b></span> en las últimas 24 horas</p>
+  <p>Una vez el filtro encuentre monedas podrá acceder a ellas al pulsar sobre estas donde, aquellas que estén en color <span class='text-success'><b>verde</b></span>, son monedas que han movido <span class='text-success'><b>más de 500 BTC en volúmen</b></span> en las últimas 24 horas. Aquellas monedas con un <b class='text-success'>(*)</b> son aquellas que tienen eventos en los <b class='text-success'>proximos 3 días</b></p>
   <p><b>Si un filtro no encuentra monedas es porque no existen en el momento monedas que cumplan con su criterio en el rango seleccionado</b></p>
   <p class='text-danger'><b>Recuerde:</b> Que una moneda aparezca en un filtro no es una garantía del 100% de que vaya a subir su valor debido a factores como fundamentales, movimientos inesperados del Bitcoin, entre otros; ellos búscan patrones en las monedas que <b>aumentan las posibilidades</b> de una subida de precio </p>
 

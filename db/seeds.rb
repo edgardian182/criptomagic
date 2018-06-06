@@ -15,3 +15,5 @@ Coin.new_candle(binance.id, '15m')
 Coin.new_events_token if Eapp.where(name: 'CriptoMagic').first.events_exp < (Time.now + 2.days)
 Eapp.where(name: 'CriptoMagic').first.update_marketcal_coins
 Coin.all.uniq(&:name).each(&:create_events)
+
+# Remember to run: rake db:mongoid:create_indexes

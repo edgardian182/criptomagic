@@ -6,7 +6,7 @@ module EventsHandler
   end
 
   def events
-    Event.where(coin_name: name).to_a
+    Event.where(coin_name: name).asc(:date_event).to_a
   end
 
   def marketcal_client

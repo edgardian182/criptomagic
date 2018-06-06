@@ -6,9 +6,18 @@
   <span>
     <%= link_to 'Gráfico', " http://es.tradingview.com/chart/?symbol=#{@exchange.name.upcase}:#{symbol}&interval=#{params[:analysis] ? INTERVALS[params[:analysis][:range]] : '60'}", target: '_blank', class: 'badge badge-pill badge-primary' %>
   </span>
+  <span>
+    <a href="#" class="badge badge-pill badge-warning" data-toggle="collapse" data-target="#eventsInfo" aria-expanded="false" aria-controls="filtersInfo">
+      Eventos
+    </a>
+  </span>
 </h3>
 
 <small class="text-muted" style="position: relative; top: -15px">Para más información sobre el uso de este análisis dirígete a <%= link_to 'AYUDA', help_path %></small>
+
+
+<%= render 'events_info', coin: @coin %>
+
 
 <table>
   <tr>
