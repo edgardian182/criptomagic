@@ -16,4 +16,6 @@ Coin.new_events_token if Eapp.where(name: 'CriptoMagic').first.events_exp < (Tim
 Eapp.where(name: 'CriptoMagic').first.update_marketcal_coins
 Coin.all.uniq(&:name).each(&:create_events)
 
-# Remember to run: rake db:mongoid:create_indexes
+# Remember to run:
+# rake db:mongoid:create_indexes
+# figaro heroku:set  --> ENV variables

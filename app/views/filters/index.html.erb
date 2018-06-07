@@ -21,7 +21,7 @@
           <td>
             <% a[a.keys.first].each do |symbol| %>
               <% coin = Coin.where(symbol: symbol, exchange: params[:analysis][:exchange]).first %>
-              <% events = coin.events.select{|e| (Time.now.beginning_of_day..(Time.now.end_of_day + 3.days)).cover?(e.date_event)}.count %>
+              <% events = coin.events.select{|e| (Time.now.beginning_of_day..(Time.now.end_of_day + 3.days)).cover?(e.date_event)}.count if coin %>
               <% v24 = coin.volume_24h_btc if coin && coin.symbol != 'BTC' %>
               <%= link_to (events && events > 0 ? symbol + '*' : symbol), coin ? coin_path(coin, id: coin.id) : '', class: "#{v24 && v24 > 500 ? 'text-success' : '' }" %>
             <% end %>
